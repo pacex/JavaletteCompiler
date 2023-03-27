@@ -43,6 +43,7 @@ public class Test
     System.out.println("[Linearized Tree]");
     System.out.println();
     System.out.println(PrettyPrinter.print(ast));
+    System.err.println("OK");
     return ast;
   }
 
@@ -55,6 +56,7 @@ public class Test
     }
     catch(Throwable e)
     {
+      System.err.println("ERROR");
       System.err.println("At line " + String.valueOf(t.l.line_num()) + ", near \"" + t.l.buff() + "\" :");
       System.err.println("     " + e.getMessage());
       System.exit(1);
