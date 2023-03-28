@@ -43,7 +43,6 @@ public class Test
     System.out.println("[Linearized Tree]");
     System.out.println();
     System.out.println(PrettyPrinter.print(ast));
-    System.err.println("OK");
     return ast;
   }
 
@@ -61,5 +60,7 @@ public class Test
       System.err.println("     " + e.getMessage());
       System.exit(1);
     }
+
+    System.err.println("OK");
   }
 }

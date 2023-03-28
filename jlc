@@ -1,0 +1,2 @@
+cd src
+java javalette/Test $1 $2 $3 $4 $5
