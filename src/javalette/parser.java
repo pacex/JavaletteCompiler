@@ -403,11 +403,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 0: // $START ::= Prog EOF 
             {
               Object RESULT =null;
-		int start_valleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int start_valright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Prog start_val = (javalette.Absyn.Prog)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		RESULT = start_val;
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("$START",0, RESULT);
             }
           /* ACCEPT */
           CUP$parser$parser.done_parsing();
@@ -417,11 +415,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 1: // Prog ::= ListTopDef 
             {
               javalette.Absyn.Prog RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListTopDef p_1 = (javalette.Absyn.ListTopDef)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Program(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Prog",0, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Prog",0, RESULT);
             }
           return CUP$parser$result;
 
@@ -429,26 +425,14 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 2: // TopDef ::= Type _IDENT_ _SYMB_0 ListArg _SYMB_1 Blk 
             {
               javalette.Absyn.TopDef RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).right;
 		javalette.Absyn.Type p_1 = (javalette.Absyn.Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		String p_2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.ListArg p_4 = (javalette.Absyn.ListArg)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_5left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_5right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_5 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_6left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_6right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Blk p_6 = (javalette.Absyn.Blk)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.FnDef(p_1,p_2,p_4,p_6); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("TopDef",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("TopDef",1, RESULT);
             }
           return CUP$parser$result;
 
@@ -456,11 +440,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 3: // ListTopDef ::= TopDef 
             {
               javalette.Absyn.ListTopDef RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.TopDef p_1 = (javalette.Absyn.TopDef)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ListTopDef(); RESULT.addLast(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListTopDef",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListTopDef",2, RESULT);
             }
           return CUP$parser$result;
 
@@ -468,14 +450,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 4: // ListTopDef ::= TopDef ListTopDef 
             {
               javalette.Absyn.ListTopDef RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.TopDef p_1 = (javalette.Absyn.TopDef)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListTopDef p_2 = (javalette.Absyn.ListTopDef)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_2; p_2.addFirst(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListTopDef",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListTopDef",2, RESULT);
             }
           return CUP$parser$result;
 
@@ -483,14 +461,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 5: // Arg ::= Type _IDENT_ 
             {
               javalette.Absyn.Arg RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Type p_1 = (javalette.Absyn.Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String p_2 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Argument(p_1,p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Arg",3, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Arg",3, RESULT);
             }
           return CUP$parser$result;
 
@@ -499,7 +473,7 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
             {
               javalette.Absyn.ListArg RESULT =null;
 		 RESULT = new javalette.Absyn.ListArg(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, RESULT);
             }
           return CUP$parser$result;
 
@@ -507,11 +481,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 7: // ListArg ::= Arg 
             {
               javalette.Absyn.ListArg RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Arg p_1 = (javalette.Absyn.Arg)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ListArg(); RESULT.addLast(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, RESULT);
             }
           return CUP$parser$result;
 
@@ -519,17 +491,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 8: // ListArg ::= Arg _SYMB_2 ListArg 
             {
               javalette.Absyn.ListArg RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Arg p_1 = (javalette.Absyn.Arg)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListArg p_3 = (javalette.Absyn.ListArg)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_3; p_3.addFirst(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListArg",4, RESULT);
             }
           return CUP$parser$result;
 
@@ -537,17 +503,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 9: // Blk ::= _SYMB_3 ListStmt _SYMB_4 
             {
               javalette.Absyn.Blk RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.ListStmt p_2 = (javalette.Absyn.ListStmt)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Block(p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Blk",5, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Blk",5, RESULT);
             }
           return CUP$parser$result;
 
@@ -556,7 +516,7 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
             {
               javalette.Absyn.ListStmt RESULT =null;
 		 RESULT = new javalette.Absyn.ListStmt(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListStmt",6, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListStmt",6, RESULT);
             }
           return CUP$parser$result;
 
@@ -564,14 +524,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 11: // ListStmt ::= ListStmt Stmt 
             {
               javalette.Absyn.ListStmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.ListStmt p_1 = (javalette.Absyn.ListStmt)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Stmt p_2 = (javalette.Absyn.Stmt)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; p_1.addLast(p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListStmt",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListStmt",6, RESULT);
             }
           return CUP$parser$result;
 
@@ -579,11 +535,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 12: // Stmt ::= _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Empty(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -591,11 +545,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 13: // Stmt ::= Blk 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Blk p_1 = (javalette.Absyn.Blk)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.BStmt(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -603,17 +555,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 14: // Stmt ::= Type ListItem _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Type p_1 = (javalette.Absyn.Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.ListItem p_2 = (javalette.Absyn.ListItem)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Decl(p_1,p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -621,20 +567,12 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 15: // Stmt ::= _IDENT_ _SYMB_6 Expr _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_4 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Ass(p_1,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -642,17 +580,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 16: // Stmt ::= _IDENT_ _SYMB_7 _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Incr(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -660,17 +592,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 17: // Stmt ::= _IDENT_ _SYMB_8 _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Decr(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -678,17 +604,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 18: // Stmt ::= _SYMB_29 Expr _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Expr p_2 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Ret(p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -696,14 +616,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 19: // Stmt ::= _SYMB_29 _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.VRet(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -711,23 +627,13 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 20: // Stmt ::= _SYMB_27 _SYMB_0 Expr _SYMB_1 Stmt 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_4 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_5left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_5right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Stmt p_5 = (javalette.Absyn.Stmt)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Cond(p_3,p_5); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -735,29 +641,15 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 21: // Stmt ::= _SYMB_27 _SYMB_0 Expr _SYMB_1 Stmt _SYMB_25 Stmt 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-6)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-5)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Object p_4 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_5left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_5right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Stmt p_5 = (javalette.Absyn.Stmt)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_6left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_6right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_6 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_7left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_7right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Stmt p_7 = (javalette.Absyn.Stmt)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.CondElse(p_3,p_5,p_7); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -765,23 +657,13 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 22: // Stmt ::= _SYMB_32 _SYMB_0 Expr _SYMB_1 Stmt 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_4 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_5left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_5right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Stmt p_5 = (javalette.Absyn.Stmt)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.While(p_3,p_5); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -789,14 +671,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 23: // Stmt ::= Expr _SYMB_5 
             {
               javalette.Absyn.Stmt RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.SExp(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Stmt",7, RESULT);
             }
           return CUP$parser$result;
 
@@ -804,11 +682,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 24: // Item ::= _IDENT_ 
             {
               javalette.Absyn.Item RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.NoInit(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Item",8, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Item",8, RESULT);
             }
           return CUP$parser$result;
 
@@ -816,17 +692,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 25: // Item ::= _IDENT_ _SYMB_6 Expr 
             {
               javalette.Absyn.Item RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Init(p_1,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Item",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Item",8, RESULT);
             }
           return CUP$parser$result;
 
@@ -834,11 +704,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 26: // ListItem ::= Item 
             {
               javalette.Absyn.ListItem RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Item p_1 = (javalette.Absyn.Item)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ListItem(); RESULT.addLast(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListItem",9, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListItem",9, RESULT);
             }
           return CUP$parser$result;
 
@@ -846,17 +714,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 27: // ListItem ::= Item _SYMB_2 ListItem 
             {
               javalette.Absyn.ListItem RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Item p_1 = (javalette.Absyn.Item)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListItem p_3 = (javalette.Absyn.ListItem)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_3; p_3.addFirst(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListItem",9, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListItem",9, RESULT);
             }
           return CUP$parser$result;
 
@@ -864,11 +726,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 28: // Type ::= _SYMB_28 
             {
               javalette.Absyn.Type RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Int(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, RESULT);
             }
           return CUP$parser$result;
 
@@ -876,11 +736,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 29: // Type ::= _SYMB_24 
             {
               javalette.Absyn.Type RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Doub(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, RESULT);
             }
           return CUP$parser$result;
 
@@ -888,11 +746,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 30: // Type ::= _SYMB_23 
             {
               javalette.Absyn.Type RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Bool(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, RESULT);
             }
           return CUP$parser$result;
 
@@ -900,11 +756,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 31: // Type ::= _SYMB_31 
             {
               javalette.Absyn.Type RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Void(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Type",10, RESULT);
             }
           return CUP$parser$result;
 
@@ -913,7 +767,7 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
             {
               javalette.Absyn.ListType RESULT =null;
 		 RESULT = new javalette.Absyn.ListType(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, RESULT);
             }
           return CUP$parser$result;
 
@@ -921,11 +775,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 33: // ListType ::= Type 
             {
               javalette.Absyn.ListType RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Type p_1 = (javalette.Absyn.Type)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ListType(); RESULT.addLast(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, RESULT);
             }
           return CUP$parser$result;
 
@@ -933,17 +785,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 34: // ListType ::= Type _SYMB_2 ListType 
             {
               javalette.Absyn.ListType RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Type p_1 = (javalette.Absyn.Type)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListType p_3 = (javalette.Absyn.ListType)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_3; p_3.addFirst(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListType",11, RESULT);
             }
           return CUP$parser$result;
 
@@ -951,11 +797,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 35: // Expr6 ::= _IDENT_ 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EVar(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -963,11 +807,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 36: // Expr6 ::= _INTEGER_ 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Integer p_1 = (Integer)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ELitInt(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -975,11 +817,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 37: // Expr6 ::= _DOUBLE_ 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Double p_1 = (Double)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ELitDoub(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -987,11 +827,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 38: // Expr6 ::= _SYMB_30 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ELitTrue(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -999,11 +837,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 39: // Expr6 ::= _SYMB_26 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ELitFalse(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -1011,20 +847,12 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 40: // Expr6 ::= _IDENT_ _SYMB_0 ListExpr _SYMB_1 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.ListExpr p_3 = (javalette.Absyn.ListExpr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_4left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_4right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_4 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EApp(p_1,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -1032,11 +860,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 41: // Expr6 ::= _STRING_ 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String p_1 = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EString(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -1044,17 +870,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 42: // Expr6 ::= _SYMB_0 Expr _SYMB_1 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.Expr p_2 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_3 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_2; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr6",12, RESULT);
             }
           return CUP$parser$result;
 
@@ -1062,14 +882,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 43: // Expr5 ::= _SYMB_9 Expr6 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_2 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Neg(p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, RESULT);
             }
           return CUP$parser$result;
 
@@ -1077,14 +893,10 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 44: // Expr5 ::= _SYMB_10 Expr6 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_2 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Not(p_2); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, RESULT);
             }
           return CUP$parser$result;
 
@@ -1092,11 +904,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 45: // Expr5 ::= Expr6 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr5",13, RESULT);
             }
           return CUP$parser$result;
 
@@ -1104,17 +914,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 46: // Expr4 ::= Expr4 MulOp Expr5 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.MulOp p_2 = (javalette.Absyn.MulOp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EMul(p_1,p_2,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr4",14, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr4",14, RESULT);
             }
           return CUP$parser$result;
 
@@ -1122,11 +926,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 47: // Expr4 ::= Expr5 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr4",14, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr4",14, RESULT);
             }
           return CUP$parser$result;
 
@@ -1134,17 +936,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 48: // Expr3 ::= Expr3 AddOp Expr4 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.AddOp p_2 = (javalette.Absyn.AddOp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EAdd(p_1,p_2,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr3",15, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr3",15, RESULT);
             }
           return CUP$parser$result;
 
@@ -1152,11 +948,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 49: // Expr3 ::= Expr4 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr3",15, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr3",15, RESULT);
             }
           return CUP$parser$result;
 
@@ -1164,17 +958,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 50: // Expr2 ::= Expr2 RelOp Expr3 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		javalette.Absyn.RelOp p_2 = (javalette.Absyn.RelOp)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ERel(p_1,p_2,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr2",16, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr2",16, RESULT);
             }
           return CUP$parser$result;
 
@@ -1182,11 +970,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 51: // Expr2 ::= Expr3 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr2",16, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr2",16, RESULT);
             }
           return CUP$parser$result;
 
@@ -1194,17 +980,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 52: // Expr1 ::= Expr2 _SYMB_11 Expr1 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EAnd(p_1,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr1",17, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr1",17, RESULT);
             }
           return CUP$parser$result;
 
@@ -1212,11 +992,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 53: // Expr1 ::= Expr2 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr1",17, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr1",17, RESULT);
             }
           return CUP$parser$result;
 
@@ -1224,17 +1002,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 54: // Expr ::= Expr1 _SYMB_12 Expr 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_3 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EOr(p_1,p_3); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr",18, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr",18, RESULT);
             }
           return CUP$parser$result;
 
@@ -1242,11 +1014,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 55: // Expr ::= Expr1 
             {
               javalette.Absyn.Expr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_1; 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr",18, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("Expr",18, RESULT);
             }
           return CUP$parser$result;
 
@@ -1255,7 +1025,7 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
             {
               javalette.Absyn.ListExpr RESULT =null;
 		 RESULT = new javalette.Absyn.ListExpr(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, RESULT);
             }
           return CUP$parser$result;
 
@@ -1263,11 +1033,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 57: // ListExpr ::= Expr 
             {
               javalette.Absyn.ListExpr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.ListExpr(); RESULT.addLast(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, RESULT);
             }
           return CUP$parser$result;
 
@@ -1275,17 +1043,11 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 58: // ListExpr ::= Expr _SYMB_2 ListExpr 
             {
               javalette.Absyn.ListExpr RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
 		javalette.Absyn.Expr p_1 = (javalette.Absyn.Expr)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
-		int p_2left = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
-		int p_2right = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
 		Object p_2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
-		int p_3left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_3right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		javalette.Absyn.ListExpr p_3 = (javalette.Absyn.ListExpr)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = p_3; p_3.addFirst(p_1); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("ListExpr",19, RESULT);
             }
           return CUP$parser$result;
 
@@ -1293,11 +1055,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 59: // AddOp ::= _SYMB_13 
             {
               javalette.Absyn.AddOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Plus(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("AddOp",20, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("AddOp",20, RESULT);
             }
           return CUP$parser$result;
 
@@ -1305,11 +1065,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 60: // AddOp ::= _SYMB_9 
             {
               javalette.Absyn.AddOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Minus(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("AddOp",20, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("AddOp",20, RESULT);
             }
           return CUP$parser$result;
 
@@ -1317,11 +1075,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 61: // MulOp ::= _SYMB_14 
             {
               javalette.Absyn.MulOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Times(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, RESULT);
             }
           return CUP$parser$result;
 
@@ -1329,11 +1085,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 62: // MulOp ::= _SYMB_15 
             {
               javalette.Absyn.MulOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Div(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, RESULT);
             }
           return CUP$parser$result;
 
@@ -1341,11 +1095,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 63: // MulOp ::= _SYMB_16 
             {
               javalette.Absyn.MulOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.Mod(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("MulOp",21, RESULT);
             }
           return CUP$parser$result;
 
@@ -1353,11 +1105,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 64: // RelOp ::= _SYMB_17 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.LTH(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
@@ -1365,11 +1115,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 65: // RelOp ::= _SYMB_18 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.LE(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
@@ -1377,11 +1125,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 66: // RelOp ::= _SYMB_19 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.GTH(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
@@ -1389,11 +1135,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 67: // RelOp ::= _SYMB_20 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.GE(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
@@ -1401,11 +1145,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 68: // RelOp ::= _SYMB_21 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.EQU(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
@@ -1413,11 +1155,9 @@ public java_cup.runtime.ComplexSymbolFactory.Location getLeftLocation(
           case 69: // RelOp ::= _SYMB_22 
             {
               javalette.Absyn.RelOp RESULT =null;
-		int p_1left = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int p_1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object p_1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = new javalette.Absyn.NE(); 
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("RelOp",22, RESULT);
             }
           return CUP$parser$result;
 
