@@ -23,6 +23,7 @@ public class Test
     }
     catch(IOException e)
     {
+      System.err.println("ERROR");
       System.err.println("Error: File not found: " + args[0]);
       System.exit(1);
     }
