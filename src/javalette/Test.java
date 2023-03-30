@@ -3,7 +3,6 @@
 package javalette;
 
 import javalette.*;
-import javalette.TypeChecker.TypeCheckException;
 
 import java.io.*;
 import java.lang.ProcessBuilder.Redirect.Type;
@@ -74,15 +73,7 @@ public class Test
     // Type Checker
     TypeChecker tc = new TypeChecker(ast);
 
-    try
-    {
-      tc.typeCheck();
-    }
-    catch(TypeChecker.TypeCheckException e){
-      System.err.println("ERROR");
-      System.err.println("     " + e.getMessage());
-      System.exit(1);
-    }
+    tc.typeCheck();
 
     // AST Valid
     System.err.println("OK");

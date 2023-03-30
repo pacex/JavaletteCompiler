@@ -9,22 +9,76 @@ import javalette.Absyn.*;
 
 public class TypeChecker
 {
-  public class TypeCheckException extends Exception{
+  public class FuncType{
+    public Type ret_;
+    public ListType args_;
 
+    public FuncType(Type ret, ListType args){
+      ret_ = ret;
+      args_ = args;
+    }
   }
 
   private Prog ast;
-  private HashMap<String, Fun> functions;
+  private HashMap<String, FuncType> functions;
 
   public TypeChecker(Prog ast){
     this.ast = ast;
-    this.functions = new HashMap<String,Fun>();
+    this.functions = new HashMap<String,FuncType>();
   }
   
-  public void typeCheck() throws TypeCheckException{
-    
+  public void typeCheck(){
+    // Build Function List
+    ProgVisitorFP<Integer, Integer> fl = new ProgVisitorFP<Integer,Integer>();
+    fl.visit((Program)ast, null);
+
   }
 
+  //region Function List Pass
+  public class ProgVisitorFP<R,A> implements javalette.Absyn.Prog.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.Program p, A arg)
+    { /* Code for Program goes here */
+      for (javalette.Absyn.TopDef x: p.listtopdef_) {
+        x.accept(new TopDefVisitorFP<R,A>(), arg);
+      }
+      return null;
+    }
+  }
+
+  public class TopDefVisitorFP<R,A> implements javalette.Absyn.TopDef.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.FnDef p, A arg)
+    { 
+      if (functions.containsKey(p.ident_)){
+        System.err.println("ERROR");
+        System.err.println("Function with identifier " + p.ident_ + " already defined.");
+        System.exit(1);
+      }
+
+      ListType argTypes = new ListType();
+
+      for (javalette.Absyn.Arg x: p.listarg_) {
+        argTypes.add(x.accept(new ArgVisitorFP(), 0));
+      }
+
+      FuncType fType = new FuncType(p.type_, argTypes);
+      functions.put(p.ident_, fType);
+      
+      return null;
+    }
+  }
+
+  public class ArgVisitorFP implements javalette.Absyn.Arg.Visitor<Type,Integer>
+  {
+    public Type visit(javalette.Absyn.Argument p, Integer i)
+    { /* Code for Argument goes here */
+      return (Type)p.type_;
+    }
+  }
+  //endregion
+
+  // Type Check Pass
   public class ProgVisitor<R,A> implements javalette.Absyn.Prog.Visitor<R,A>
   {
     public R visit(javalette.Absyn.Program p, A arg)
