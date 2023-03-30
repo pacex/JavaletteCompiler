@@ -3,7 +3,11 @@
 package javalette;
 
 import javalette.*;
+import javalette.TypeChecker.TypeCheckException;
+
 import java.io.*;
+import java.lang.ProcessBuilder.Redirect.Type;
+
 import java_cup.runtime.*;
 
 
@@ -49,10 +53,15 @@ public class Test
 
   public static void main(String args[]) throws Exception
   {
+    // Lexer
     Test t = new Test(args);
+
+    // Parser
+    javalette.Absyn.Prog ast = null;
+
     try
     {
-      t.parse();
+      ast = t.parse();
     }
     catch(Throwable e)
     {
@@ -61,6 +70,21 @@ public class Test
       System.err.println("     " + e.getMessage());
       System.exit(1);
     }
+
+    // Type Checker
+    TypeChecker tc = new TypeChecker(ast);
+
+    try
+    {
+      tc.typeCheck();
+    }
+    catch(TypeChecker.TypeCheckException e){
+      System.err.println("ERROR");
+      System.err.println("     " + e.getMessage());
+      System.exit(1);
+    }
+
+    // AST Valid
     System.err.println("OK");
   }
 }
