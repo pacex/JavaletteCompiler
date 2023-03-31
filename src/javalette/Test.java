@@ -72,7 +72,6 @@ public class Test
 
     // Type Checker
     TypeChecker tc = new TypeChecker(ast);
-
     tc.typeCheck();
 
     // AST Valid

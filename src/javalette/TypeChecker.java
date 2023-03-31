@@ -17,49 +17,100 @@ public class TypeChecker
       ret_ = ret;
       args_ = args;
     }
+
+    public boolean equals(Object o){
+      if (this == o) return true;
+      if (o instanceof FuncType) {
+        FuncType o_ = (FuncType)o;
+        if (!this.ret_.equals(o_.ret_)) return false;
+        if (this.args_.size() != o_.args_.size()) return false;
+        for (int i = 0; i < this.args_.size(); i++){
+          if (!this.args_.get(i).equals(o_.args_.get(i))) return false;
+        }
+        return true;
+      }
+      return false;
+    }
   }
 
   private Prog ast;
+
   private HashMap<String, FuncType> functions;
+  private LinkedList<HashMap<String, Type>> stack;
+
+  // region Stack Frame Methods
+  private void createStackFrame(){
+    stack.add(new HashMap<String,Type>());
+  }
+
+  private void removeTopStackFrame(){
+    stack.removeLast();
+  }
+
+  private void checkAndAddVarToStackFrame(String identifier, Type type){
+    if (stack.getLast().containsKey(identifier)) abort("Variable with identifier " + identifier + " already defined!");
+    stack.getLast().put(identifier, type);
+  }
+
+  private Type getVarType(String identifier){
+    for(int i = stack.size() - 1; i >= 0; i--){
+      HashMap<String,Type> frame = stack.get(i);
+      if (frame.containsKey(identifier)){
+        return frame.get(identifier);
+      }
+    }
+    return null;
+  }
+  // endregion
 
   public TypeChecker(Prog ast){
     this.ast = ast;
     this.functions = new HashMap<String,FuncType>();
+    this.stack = new LinkedList<HashMap<String,Type>>();
   }
   
   public void typeCheck(){
-    // Build Function List
-    ProgVisitorFP<Integer, Integer> fl = new ProgVisitorFP<Integer,Integer>();
+
+    // Build Function List and check for duplicate function identifiers
+    ProgVisitorFP fl = new ProgVisitorFP();
     fl.visit((Program)ast, null);
+
+    // Type Check Pass
+    ProgVisitor tc = new ProgVisitor();
+    tc.visit((Program)ast, null);
 
   }
 
+  private void abort(String message){
+    System.err.println("ERROR");
+    System.err.println(message);
+    System.exit(1);
+  }
+
   //region Function List Pass
-  public class ProgVisitorFP<R,A> implements javalette.Absyn.Prog.Visitor<R,A>
+  public class ProgVisitorFP implements javalette.Absyn.Prog.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Program p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
     { /* Code for Program goes here */
       for (javalette.Absyn.TopDef x: p.listtopdef_) {
-        x.accept(new TopDefVisitorFP<R,A>(), arg);
+        x.accept(new TopDefVisitorFP(), arg);
       }
       return null;
     }
   }
 
-  public class TopDefVisitorFP<R,A> implements javalette.Absyn.TopDef.Visitor<R,A>
+  public class TopDefVisitorFP implements javalette.Absyn.TopDef.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.FnDef p, A arg)
+    public java.lang.Void visit(javalette.Absyn.FnDef p, java.lang.Void arg)
     { 
       if (functions.containsKey(p.ident_)){
-        System.err.println("ERROR");
-        System.err.println("Function with identifier " + p.ident_ + " already defined.");
-        System.exit(1);
+        abort("Function with identifier " + p.ident_ + " already defined.");
       }
 
       ListType argTypes = new ListType();
 
       for (javalette.Absyn.Arg x: p.listarg_) {
-        argTypes.add(x.accept(new ArgVisitorFP(), 0));
+        argTypes.add(x.accept(new ArgVisitor(), null).type_);
       }
 
       FuncType fType = new FuncType(p.type_, argTypes);
@@ -68,56 +119,59 @@ public class TypeChecker
       return null;
     }
   }
-
-  public class ArgVisitorFP implements javalette.Absyn.Arg.Visitor<Type,Integer>
-  {
-    public Type visit(javalette.Absyn.Argument p, Integer i)
-    { /* Code for Argument goes here */
-      return (Type)p.type_;
-    }
-  }
   //endregion
 
   // Type Check Pass
-  public class ProgVisitor<R,A> implements javalette.Absyn.Prog.Visitor<R,A>
+  public class ProgVisitor implements javalette.Absyn.Prog.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Program p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
     { /* Code for Program goes here */
       for (javalette.Absyn.TopDef x: p.listtopdef_) {
-        x.accept(new TopDefVisitor<R,A>(), arg);
+        x.accept(new TopDefVisitor(), arg);
       }
       return null;
     }
   }
-  public class TopDefVisitor<R,A> implements javalette.Absyn.TopDef.Visitor<R,A>
+  public class TopDefVisitor implements javalette.Absyn.TopDef.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.FnDef p, A arg)
+    public java.lang.Void visit(javalette.Absyn.FnDef p, java.lang.Void arg)
     { /* Code for FnDef goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
+
+      // Function stack frame is created here including arguments
+      createStackFrame();
+
+      //p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.ident_;
       for (javalette.Absyn.Arg x: p.listarg_) {
-        x.accept(new ArgVisitor<R,A>(), arg);
+        Argument a = x.accept(new ArgVisitor(), arg);
+        checkAndAddVarToStackFrame(a.ident_, a.type_);
       }
-      p.blk_.accept(new BlkVisitor<R,A>(), arg);
+      p.blk_.accept(new BlkVisitor(), false);
+
+      removeTopStackFrame();
       return null;
     }
   }
-  public class ArgVisitor<R,A> implements javalette.Absyn.Arg.Visitor<R,A>
+  public class ArgVisitor implements javalette.Absyn.Arg.Visitor<Argument,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Argument p, A arg)
+    public Argument visit(javalette.Absyn.Argument p, java.lang.Void arg)
     { /* Code for Argument goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.ident_;
-      return null;
+      return p;
     }
   }
-  public class BlkVisitor<R,A> implements javalette.Absyn.Blk.Visitor<R,A>
+  public class BlkVisitor implements javalette.Absyn.Blk.Visitor<java.lang.Void,Boolean>
   {
-    public R visit(javalette.Absyn.Block p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Block p, Boolean createStackFrame)
     { /* Code for Block goes here */
+      if (createStackFrame) createStackFrame();
+      
       for (javalette.Absyn.Stmt x: p.liststmt_) {
-        x.accept(new StmtVisitor<R,A>(), arg);
+        //x.accept(new StmtVisitor<R,A>(), arg);
       }
+
+      if (createStackFrame) removeTopStackFrame();
       return null;
     }
   }
@@ -129,7 +183,7 @@ public class TypeChecker
     }
     public R visit(javalette.Absyn.BStmt p, A arg)
     { /* Code for BStmt goes here */
-      p.blk_.accept(new BlkVisitor<R,A>(), arg);
+      p.blk_.accept(new BlkVisitor(), true);
       return null;
     }
     public R visit(javalette.Absyn.Decl p, A arg)
