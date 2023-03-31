@@ -133,6 +133,9 @@ public class TypeChecker
       }
 
       FuncType fType = new FuncType(p.type_, argTypes);
+
+      if (p.ident_.equals("main") && !fType.ret_.equals(new Int())) abort("Function 'main' must return a value of type 'int'!");
+
       functions.put(p.ident_, fType);
       
       return null;
