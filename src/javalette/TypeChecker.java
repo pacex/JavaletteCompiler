@@ -39,6 +39,9 @@ public class TypeChecker
   private HashMap<String, FuncType> functions;
   private LinkedList<HashMap<String, Type>> stack;
 
+  // Type checker state variables
+  private String currentFunction;
+
   // region Stack Frame Methods
   private void createStackFrame(){
     stack.add(new HashMap<String,Type>());
@@ -68,6 +71,8 @@ public class TypeChecker
     this.ast = ast;
     this.functions = new HashMap<String,FuncType>();
     this.stack = new LinkedList<HashMap<String,Type>>();
+
+    this.currentFunction = "";
   }
   
   public void typeCheck(){
@@ -143,7 +148,77 @@ public class TypeChecker
   }
   //endregion
 
-  // Type Check Pass
+  // region Return Check
+  public class StmtRCVisitor implements javalette.Absyn.Stmt.Visitor<Boolean,java.lang.Void>
+  {
+    public Boolean visit(javalette.Absyn.Empty p, java.lang.Void arg)
+    { /* Code for Empty goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.BStmt p, java.lang.Void arg)
+    { /* Code for BStmt goes here */
+      return p.blk_.accept(new BlkRCVisitor(), null);
+    }
+    public Boolean visit(javalette.Absyn.Decl p, java.lang.Void arg)
+    { /* Code for Decl goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.Ass p, java.lang.Void arg)
+    { /* Code for Ass goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.Incr p, java.lang.Void arg)
+    { /* Code for Incr goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.Decr p, java.lang.Void arg)
+    { /* Code for Decr goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.Ret p, java.lang.Void arg)
+    { /* Code for Ret goes here */
+      return true;
+    }
+    public Boolean visit(javalette.Absyn.VRet p, java.lang.Void arg)
+    { /* Code for VRet goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.Cond p, java.lang.Void arg)
+    { /* Code for Cond goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.CondElse p, java.lang.Void arg)
+    { /* Code for CondElse goes here */
+      Boolean s1, s2;
+      s1 = p.stmt_1.accept(new StmtRCVisitor(), null);
+      s2 = p.stmt_2.accept(new StmtRCVisitor(), null);
+      return s1 && s2;
+    }
+    public Boolean visit(javalette.Absyn.While p, java.lang.Void arg)
+    { /* Code for While goes here */
+      return false;
+    }
+    public Boolean visit(javalette.Absyn.SExp p, java.lang.Void arg)
+    { /* Code for SExp goes here */
+      return false;
+    }
+  }
+  public class BlkRCVisitor implements javalette.Absyn.Blk.Visitor<Boolean,java.lang.Void>
+  {
+    public Boolean visit(javalette.Absyn.Block p, java.lang.Void arg)
+    { /* Code for Block goes here */
+      for (javalette.Absyn.Stmt x: p.liststmt_) {
+         if (x.accept(new StmtRCVisitor(), null)) return true;
+      }
+      return false;
+    }
+  }
+
+  // endregion
+
+
+
+  // region Type Check Pass
   public class ProgVisitor implements javalette.Absyn.Prog.Visitor<java.lang.Void,java.lang.Void>
   {
     public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
@@ -163,14 +238,18 @@ public class TypeChecker
       createStackFrame();
 
       //p.type_.accept(new TypeVisitor<R,A>(), arg);
-      //p.ident_;
+      currentFunction = p.ident_;
+
       for (javalette.Absyn.Arg x: p.listarg_) {
         Argument a = x.accept(new ArgVisitor(), arg);
         checkAndAddVarToStackFrame(a.ident_, a.type_);
       }
       p.blk_.accept(new BlkVisitor(), false);
 
+      if (!p.type_.equals(new Void()) && !p.blk_.accept(new BlkRCVisitor(), null)) abort("Function '" + p.ident_ + "' has to return a value!");
+
       removeTopStackFrame();
+
       return null;
     }
   }
@@ -180,6 +259,7 @@ public class TypeChecker
     { /* Code for Argument goes here */
       //p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.ident_;
+      if (p.type_.equals(new Void())) abort("Arguments of type 'void' not allowed!");
       return p;
     }
   }
@@ -210,7 +290,7 @@ public class TypeChecker
     }
     public java.lang.Void visit(javalette.Absyn.Decl p, java.lang.Void arg)
     { /* Code for Decl goes here */
-      //p.type_.accept(new TypeVisitor<R,A>(), arg);
+      if (p.type_.equals(new Void())) abort("Variable declarations of type 'void' not allowed!");
       for (javalette.Absyn.Item x: p.listitem_) {
         x.accept(new ItemVisitor(), p.type_);
       }
@@ -239,22 +319,26 @@ public class TypeChecker
     }
     public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
     { /* Code for Ret goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      p.expr_.accept(new ExprVisitor(), functions.get(currentFunction).ret_);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.VRet p, java.lang.Void arg)
     { /* Code for VRet goes here */
+      if (!functions.get(currentFunction).ret_.equals(new Void())) abort("Function '" + currentFunction + "' has to return a value!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Cond p, java.lang.Void arg)
     { /* Code for Cond goes here */
+      
       p.expr_.accept(new ExprVisitor(), new Bool());
+
       p.stmt_.accept(new StmtVisitor(), null);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.CondElse p, java.lang.Void arg)
     { /* Code for CondElse goes here */
       p.expr_.accept(new ExprVisitor(), new Bool());
+
       p.stmt_1.accept(new StmtVisitor(), null);
       p.stmt_2.accept(new StmtVisitor(), null);
       return null;
@@ -262,6 +346,7 @@ public class TypeChecker
     public java.lang.Void visit(javalette.Absyn.While p, java.lang.Void arg)
     { /* Code for While goes here */
       p.expr_.accept(new ExprVisitor(), new Bool());
+
       p.stmt_.accept(new StmtVisitor(), null);
       return null;
     }
@@ -591,5 +676,7 @@ public class TypeChecker
       p.expr_2.accept(new ExprVisitor(), t);
       return t;
     }
+    //endregion
   }
+  
 }
