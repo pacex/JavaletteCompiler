@@ -1,6 +1,5 @@
 # Documentation
 
-==========
 HOW TO RUN
 ==========
 
@@ -8,7 +7,6 @@ HOW TO RUN
 2) Execute jlc in root directory. jlc takes one argument: ./jlc <path to javalette source file>
     Alternatively, if jlc is run without any argument, it expects javalette source code in stdin.
 
-=================
 PROGRAM BEHAVIOUR
 =================
 
@@ -16,7 +14,6 @@ In its current state the compiler only performs lexing, parsing and type/return 
 If all steps were successful, the program will write 'OK' to stderr and terminate with exit code 0.
 If any of the steps were unsuccessful, the program will write 'ERROR' to stderr followed by an error message and terminate with exit code 1.
 
-=================================
 JAVALETTE LANGUAGE AND EXTENSIONS
 =================================
 
