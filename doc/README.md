@@ -4,9 +4,9 @@
 HOW TO RUN
 ==========
 
-1) Replace classpath definitions in src/run and src/Makefile with correct paths to JLex and CUP.
-2) Make in root directory.
-3) Execute jlc in root directory. jlc takes one argument: ./jlc <path to javalette source file>
+1) Make in root directory.
+2) Execute jlc in root directory. jlc takes one argument: ./jlc <path to javalette source file>
+    Alternatively, if jlc is run without any argument, it expects javalette source code in stdin.
 
 =================
 PROGRAM BEHAVIOUR

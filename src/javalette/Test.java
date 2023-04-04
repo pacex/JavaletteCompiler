@@ -37,6 +37,8 @@ public class Test
   {
     /* The default parser is the first-defined entry point. */
     javalette.Absyn.Prog ast = p.pProg();
+
+    /*
     System.out.println();
     System.out.println("Parse Succesful!");
     System.out.println();
@@ -46,7 +48,7 @@ public class Test
     System.out.println();
     System.out.println("[Linearized Tree]");
     System.out.println();
-    System.out.println(PrettyPrinter.print(ast));
+    System.out.println(PrettyPrinter.print(ast)); */
     return ast;
   }
 
@@ -76,5 +78,13 @@ public class Test
 
     // AST Valid
     System.err.println("OK");
+
+
+    // example llvm code
+    System.out.println("declare void @printInt(i32)");
+    System.out.println("define i32 @main () {");
+    System.out.println("entry:  call void @printInt(i32 5050)");
+    System.out.println("ret i32 0");
+    System.out.println("}");
   }
 }

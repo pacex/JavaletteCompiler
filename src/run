@@ -1,2 +1,2 @@
 #!/bin/sh
-java -classpath /chalmers/users/walloner/CompilerConstruction/programs/java-cup-11b.jar:/chalmers/users/walloner/CompilerConstruction/work/src/ javalette/Test $1
+java javalette/Test $1
