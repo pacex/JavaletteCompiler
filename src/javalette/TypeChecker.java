@@ -300,7 +300,8 @@ public class TypeChecker
     { /* Code for Ass goes here */
       Type expectedType = getVarType(p.ident_);
       if (expectedType == null) abort("Variable '" + p.ident_ + "'' is undeclared!");
-      p.expr_.accept(new ExprVisitor(), expectedType);
+      //p.expr_.accept(new ExprVisitor(), expectedType);
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(expectedType)) abort("Expression does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
@@ -319,7 +320,8 @@ public class TypeChecker
     }
     public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
     { /* Code for Ret goes here */
-      p.expr_.accept(new ExprVisitor(), functions.get(currentFunction).ret_);
+      //p.expr_.accept(new ExprVisitor(), functions.get(currentFunction).ret_);
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(functions.get(currentFunction).ret_)) abort("Expression does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.VRet p, java.lang.Void arg)
@@ -330,14 +332,16 @@ public class TypeChecker
     public java.lang.Void visit(javalette.Absyn.Cond p, java.lang.Void arg)
     { /* Code for Cond goes here */
       
-      p.expr_.accept(new ExprVisitor(), new Bool());
+      //p.expr_.accept(new ExprVisitor(), new Bool());
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(new Bool())) abort("Expression does not match expected type!");
 
       p.stmt_.accept(new StmtVisitor(), null);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.CondElse p, java.lang.Void arg)
     { /* Code for CondElse goes here */
-      p.expr_.accept(new ExprVisitor(), new Bool());
+      //p.expr_.accept(new ExprVisitor(), new Bool());
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(new Bool())) abort("Expression does not match expected type!");
 
       p.stmt_1.accept(new StmtVisitor(), null);
       p.stmt_2.accept(new StmtVisitor(), null);
@@ -345,14 +349,16 @@ public class TypeChecker
     }
     public java.lang.Void visit(javalette.Absyn.While p, java.lang.Void arg)
     { /* Code for While goes here */
-      p.expr_.accept(new ExprVisitor(), new Bool());
+      //p.expr_.accept(new ExprVisitor(), new Bool());
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(new Bool())) abort("Expression does not match expected type!");
 
       p.stmt_.accept(new StmtVisitor(), null);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.SExp p, java.lang.Void arg)
     { /* Code for SExp goes here */
-      p.expr_.accept(new ExprVisitor(), new Void());
+      //p.expr_.accept(new ExprVisitor(), new Void());
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(new Void())) abort("Expression does not match expected type!");
       return null;
     }
   }
@@ -366,7 +372,7 @@ public class TypeChecker
     public java.lang.Void visit(javalette.Absyn.Init p, Type t)
     { /* Code for Init goes here */
       //p.ident_;
-      p.expr_.accept(new ExprVisitor(), t);
+      if (!p.expr_.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
       checkAndAddVarToStackFrame(p.ident_, t);
       return null;
     }
@@ -398,37 +404,38 @@ public class TypeChecker
       return null;
     }
   }
+  
   public class ExprVisitor implements javalette.Absyn.Expr.Visitor<java.lang.Void,Type>
   {
     public java.lang.Void visit(javalette.Absyn.EVar p, Type expected)
-    { /* Code for EVar goes here */
+    { 
       Type varType = getVarType(p.ident_);
       if (varType == null) abort("Variable '" + p.ident_ + "'' is undefined!");
       if (!varType.equals(expected)) abort("Variable '" + p.ident_ + "'' does not math the expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.ELitInt p, Type expected)
-    { /* Code for ELitInt goes here */
+    { 
       if (!(expected instanceof Int)) abort("Integer literal '" + p.integer_.toString() + "'' does not match expected type!"); 
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.ELitDoub p, Type expected)
-    { /* Code for ELitDoub goes here */
+    { 
       if (!(expected instanceof Doub)) abort("Double literal '" + p.double_.toString() + "'' does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.ELitTrue p, Type expected)
-    { /* Code for ELitTrue goes here */
+    { 
       if (!(expected instanceof Bool)) abort("Boolean literal 'true' does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.ELitFalse p, Type expected)
-    { /* Code for ELitFalse goes here */
+    { 
       if (!(expected instanceof Bool)) abort("Boolean literal 'false' does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EApp p, Type expected)
-    { /* Code for EApp goes here */
+    { 
       
       // Exception for printString
       if (p.ident_.equals("printString")){
@@ -451,24 +458,24 @@ public class TypeChecker
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EString p, Type expected)
-    { /* Code for EString goes here */
+    { 
       abort("String literal only allowed in call to function printString!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Neg p, Type expected)
-    { /* Code for Neg goes here */
+    { 
       if (!(expected instanceof Int || expected instanceof Doub)) abort("Return type of 'negation' operation does not match expected type!");
       p.expr_.accept(new ExprVisitor(), expected);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Not p, Type expected)
-    { /* Code for Not goes here */
+    { 
       if (!(expected instanceof Bool)) abort("Return type of 'not' operation does not match expected type!");
       p.expr_.accept(new ExprVisitor(), expected);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EMul p, Type expected)
-    { /* Code for EMul goes here */
+    { 
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
       p.mulop_.accept(new MulOpVisitor(), t);
       p.expr_2.accept(new ExprVisitor(), t);
@@ -478,7 +485,7 @@ public class TypeChecker
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EAdd p, Type expected)
-    { /* Code for EAdd goes here */
+    { 
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
       p.addop_.accept(new AddOpVisitor(), t);
       p.expr_2.accept(new ExprVisitor(), t);
@@ -488,7 +495,7 @@ public class TypeChecker
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.ERel p, Type expected)
-    { /* Code for ERel goes here */
+    { 
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
       p.relop_.accept(new RelOpVisitor(), t);
       p.expr_2.accept(new ExprVisitor(), t);
@@ -498,82 +505,83 @@ public class TypeChecker
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EAnd p, Type expected)
-    { /* Code for EAnd goes here */
+    { 
       if (!(expected instanceof Bool)) abort("Return type of 'and' operation does not match expected type!");
       p.expr_1.accept(new ExprVisitor(), expected);
       p.expr_2.accept(new ExprVisitor(), expected);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.EOr p, Type expected)
-    { /* Code for EOr goes here */
+    { 
       if (!(expected instanceof Bool)) abort("Return type of 'or' operation does not match expected type!");
       p.expr_1.accept(new ExprVisitor(), expected);
-      p.expr_2.accept(new ExprVisitor(), expected);
+      //p.expr_2.accept(new ExprVisitor(), expected);
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(expected)) abort("Expression does not match expected type!");
       return null;
     }
-  }
-  public class AddOpVisitor implements javalette.Absyn.AddOp.Visitor<java.lang.Void,Type>
+  } 
+  public class AddOpVisitor implements javalette.Absyn.AddOp.Visitor<Type,Type>
   {
-    public java.lang.Void visit(javalette.Absyn.Plus p, Type operand)
+    public Type visit(javalette.Absyn.Plus p, Type operand)
     { /* Code for Plus goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'add' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return operand;
     }
-    public java.lang.Void visit(javalette.Absyn.Minus p, Type operand)
+    public Type visit(javalette.Absyn.Minus p, Type operand)
     { /* Code for Minus goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'subtract' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return operand;
     }
   }
-  public class MulOpVisitor implements javalette.Absyn.MulOp.Visitor<java.lang.Void,Type>
+  public class MulOpVisitor implements javalette.Absyn.MulOp.Visitor<Type,Type>
   {
-    public java.lang.Void visit(javalette.Absyn.Times p, Type operand)
+    public Type visit(javalette.Absyn.Times p, Type operand)
     { /* Code for Times goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'multiply' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return operand;
     }
-    public java.lang.Void visit(javalette.Absyn.Div p, Type operand)
+    public Type visit(javalette.Absyn.Div p, Type operand)
     { /* Code for Div goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'divide' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return operand;
     }
-    public java.lang.Void visit(javalette.Absyn.Mod p, Type operand)
+    public Type visit(javalette.Absyn.Mod p, Type operand)
     { /* Code for Mod goes here */
       if (!(operand instanceof Int)) abort("'modulo' operation expects operand of type 'int'!");
-      return null;
+      return operand;
     }
   }
-  public class RelOpVisitor implements javalette.Absyn.RelOp.Visitor<java.lang.Void,Type>
+  public class RelOpVisitor implements javalette.Absyn.RelOp.Visitor<Type,Type>
   {
-    public java.lang.Void visit(javalette.Absyn.LTH p, Type operand)
+    public Type visit(javalette.Absyn.LTH p, Type operand)
     { /* Code for LTH goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'less than' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
-    public java.lang.Void visit(javalette.Absyn.LE p, Type operand)
+    public Type visit(javalette.Absyn.LE p, Type operand)
     { /* Code for LE goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'less than or equal' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
-    public java.lang.Void visit(javalette.Absyn.GTH p, Type operand)
+    public Type visit(javalette.Absyn.GTH p, Type operand)
     { /* Code for GTH goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'greater than' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
-    public java.lang.Void visit(javalette.Absyn.GE p, Type operand)
+    public Type visit(javalette.Absyn.GE p, Type operand)
     { /* Code for GE goes here */
       if (!(operand instanceof Int || operand instanceof Doub)) abort("'greater than or equal' operation expects operand of type 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
-    public java.lang.Void visit(javalette.Absyn.EQU p, Type operand)
+    public Type visit(javalette.Absyn.EQU p, Type operand)
     { /* Code for EQU goes here */
       if (!(operand instanceof Bool || operand instanceof Int || operand instanceof Doub)) abort("'equal' operation expects operand of type 'bool', 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
-    public java.lang.Void visit(javalette.Absyn.NE p, Type operand)
+    public Type visit(javalette.Absyn.NE p, Type operand)
     { /* Code for NE goes here */
       if (!(operand instanceof Bool || operand instanceof Int || operand instanceof Doub)) abort("'not equal' operation expects operand of type 'bool', 'int' or 'double'!");
-      return null;
+      return new Bool();
     }
   }
 
@@ -620,7 +628,8 @@ public class TypeChecker
       for (int i = 0; i < p.listexpr_.size(); i++) {
         Type expectedType = ft.args_.get(i);
         Expr x = p.listexpr_.get(i);
-        x.accept(new ExprVisitor(), expectedType);
+        //x.accept(new ExprVisitor(), expectedType);
+        if (!x.accept(new ExprInferVisitor(), null).equals(expectedType)) abort("Expression does not match expected type!");
       }
       return ft.ret_;
     }
@@ -644,37 +653,34 @@ public class TypeChecker
     public Type visit(javalette.Absyn.EMul p, java.lang.Void arg)
     { /* Code for EMul goes here */
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
-      p.mulop_.accept(new MulOpVisitor(), t);
-      p.expr_2.accept(new ExprVisitor(), t);
-      return t;
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
+      return p.mulop_.accept(new MulOpVisitor(), t);
     }
     public Type visit(javalette.Absyn.EAdd p, java.lang.Void arg)
     { /* Code for EAdd goes here */
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
-      p.addop_.accept(new AddOpVisitor(), t);
-      p.expr_2.accept(new ExprVisitor(), t);
-      return t;
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
+      return p.addop_.accept(new AddOpVisitor(), t);
     }
     public Type visit(javalette.Absyn.ERel p, java.lang.Void arg)
     { /* Code for ERel goes here */
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
-      p.relop_.accept(new RelOpVisitor(), t);
-      p.expr_2.accept(new ExprVisitor(), t);
-      return t;
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
+      return p.relop_.accept(new RelOpVisitor(), t);
     }
     public Type visit(javalette.Absyn.EAnd p, java.lang.Void arg)
     { /* Code for EAnd goes here */
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
       if (!(t instanceof Bool)) abort("'and' operation expects operand of type boolean!");
-      p.expr_2.accept(new ExprVisitor(), t);
-      return t;
+      return new Bool();
     }
     public Type visit(javalette.Absyn.EOr p, java.lang.Void arg)
     { /* Code for EOr goes here */
       Type t = p.expr_1.accept(new ExprInferVisitor(), null);
+      if (!p.expr_2.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
       if (!(t instanceof Bool)) abort("'or' operation expects operand of type boolean!");
-      p.expr_2.accept(new ExprVisitor(), t);
-      return t;
+      return new Bool();
     }
     //endregion
   }
