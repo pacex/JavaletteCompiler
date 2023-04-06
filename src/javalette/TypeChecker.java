@@ -39,6 +39,10 @@ public class TypeChecker
   private HashMap<String, FuncType> functions;
   private LinkedList<HashMap<String, Type>> stack;
 
+  public HashMap<String, FuncType> getFunctions(){
+    return functions;
+  }
+
   // Type checker state variables
   private String currentFunction;
 

@@ -1,15 +1,35 @@
 package javalette;
 
+import java.io.*;
 import java.util.*;
 
 import javalette.Absyn.*;
+import javalette.TypeChecker.FuncType;
 
 public class CodeGenerator {
 
   private Prog ast;
+  private PrintStream code;
+  private HashMap<String, FuncType> functions;
 
-  public CodeGenerator(Prog ast){
+  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions){
       this.ast = ast;
+      this.functions = functions;
+      this.code = new PrintStream(System.out, false);
+  }
+
+  public PrintStream generateCode(){
+    
+    // Overhead  
+    code.println("declare void @printInt(i32)");
+    code.println("declare void @printDouble(double)");
+    code.println("declare void @printString(i8*)");
+    code.println("declare i32 @readInt()");
+    code.println("declare double @readDouble()");
+
+    // Function definitions
+
+    return code;
   }
 
 

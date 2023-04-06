@@ -76,15 +76,12 @@ public class Test
     TypeChecker tc = new TypeChecker(ast);
     tc.typeCheck();
 
+    // Code Generator
+    CodeGenerator cg = new CodeGenerator(ast);
+    PrintStream code = cg.generateCode();
+    code.close();
+
     // AST Valid
     System.err.println("OK");
-
-
-    // example llvm code
-    System.out.println("declare void @printInt(i32)");
-    System.out.println("define i32 @main () {");
-    System.out.println("entry:  call void @printInt(i32 5050)");
-    System.out.println("ret i32 0");
-    System.out.println("}");
   }
 }
