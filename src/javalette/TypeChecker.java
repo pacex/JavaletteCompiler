@@ -99,6 +99,8 @@ public class TypeChecker
     ProgVisitorFP fl = new ProgVisitorFP();
     fl.visit((Program)ast, null);
 
+    if (!functions.containsKey("main")) abort("No main function!");
+
     // Type Check Pass
     ProgVisitor tc = new ProgVisitor();
     tc.visit((Program)ast, null);
