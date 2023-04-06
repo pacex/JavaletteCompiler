@@ -8,14 +8,21 @@ import javalette.TypeChecker.FuncType;
 
 public class CodeGenerator {
 
+  public class Var{
+    public Reg memPtrReg_;
+    public Type type_;
+  }
+
   private Prog ast;
   private PrintStream code;
   private HashMap<String, FuncType> functions;
+  private LinkedList<HashMap<String,Var>> stack;
 
   public CodeGenerator(Prog ast, HashMap<String,FuncType> functions){
       this.ast = ast;
       this.functions = functions;
       this.code = new PrintStream(System.out, false);
+      this.stack = new LinkedList<HashMap<String,Var>>();
   }
 
   public PrintStream generateCode(){

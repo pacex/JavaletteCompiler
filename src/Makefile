@@ -10,7 +10,7 @@ LEXER=${JAVA} ${JAVA_FLAGS} JLex.Main
 LEXER_FLAGS=
 all : test
 
-test : absyn javalette/TypeChecker.class javalette/CodeGenerator.class javalette/Yylex.class javalette/PrettyPrinter.class javalette/Test.class javalette/VisitSkel.class javalette/ComposVisitor.class javalette/AbstractVisitor.class javalette/FoldVisitor.class javalette/AllVisitor.class javalette/parser.class javalette/sym.class javalette/Test.class
+test : absyn javalette/Reg.class javalette/TypeChecker.class javalette/CodeGenerator.class javalette/Yylex.class javalette/PrettyPrinter.class javalette/Test.class javalette/VisitSkel.class javalette/ComposVisitor.class javalette/AbstractVisitor.class javalette/FoldVisitor.class javalette/AllVisitor.class javalette/parser.class javalette/sym.class javalette/Test.class
 
 .PHONY : absyn
 

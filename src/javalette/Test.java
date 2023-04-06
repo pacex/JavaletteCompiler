@@ -77,7 +77,7 @@ public class Test
     tc.typeCheck();
 
     // Code Generator
-    CodeGenerator cg = new CodeGenerator(ast);
+    CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions());
     PrintStream code = cg.generateCode();
     code.close();
 
