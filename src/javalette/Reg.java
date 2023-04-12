@@ -1,7 +1,5 @@
 package javalette;
 
-import javalette.Absyn.*;
-
 public class Reg {
     
     private static int count = 0;
@@ -11,7 +9,7 @@ public class Reg {
 
     public Reg(String type){
         Type_ = type;
-        Ident_ = "%" + String.valueOf(count);
+        Ident_ = "%t" + String.valueOf(count);
         count++;
     }
 }

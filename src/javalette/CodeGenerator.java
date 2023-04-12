@@ -9,8 +9,31 @@ import javalette.TypeChecker.FuncType;
 public class CodeGenerator {
 
   public class Var{
+    public Var(Reg r, Type t) {
+      memPtrReg_ = r;
+      type_ = t;
+    }
     public Reg memPtrReg_;
     public Type type_;
+  }
+
+  public class Arg{
+    public Arg(Reg r, Type t, String i){
+      type_ = t;
+      reg_ = r;
+      ident_ = i;
+    }
+    public Type type_;
+    public String ident_;
+    public Reg reg_;
+  }
+
+  private String TypeToString(Type t){
+    if (t instanceof Int) return "i32";
+    else if (t instanceof Doub) return "double";
+    else if (t instanceof Bool) return "i1";
+    else if (t instanceof javalette.Absyn.Void) return "void";
+    else return "<unknown type>";
   }
 
   private Prog ast;
@@ -19,68 +42,121 @@ public class CodeGenerator {
   private HashMap<Expr,Type> expressions;
   private LinkedList<HashMap<String,Var>> stack;
 
-  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions){
+  private String currentFunction;
+
+  // region Stack Frame Methods
+  private void createStackFrame(){
+    stack.add(new HashMap<String,Var>());
+  }
+
+  private void removeTopStackFrame(){
+    stack.removeLast();
+  }
+
+  private void addVarToStackFrame(String identifier, Var var){
+    stack.getLast().put(identifier, var);
+  }
+
+  private Var getVar(String identifier){
+    for(int i = stack.size() - 1; i >= 0; i--){
+      HashMap<String,Var> frame = stack.get(i);
+      if (frame.containsKey(identifier)){
+        return frame.get(identifier);
+      }
+    }
+    return null;
+  }
+  // endregion
+
+  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions, HashMap<Expr,Type> expressions){
       this.ast = ast;
       this.functions = functions;
+      this.expressions = expressions;
       this.code = new PrintStream(System.out, false);
       this.stack = new LinkedList<HashMap<String,Var>>();
+      this.currentFunction = "";
   }
 
   public PrintStream generateCode(){
     
-    // Overhead  
-    code.println("declare void @printInt(i32)");
-    code.println("declare void @printDouble(double)");
-    code.println("declare void @printString(i8*)");
-    code.println("declare i32 @readInt()");
-    code.println("declare double @readDouble()");
+    
 
-    // Function definitions
+    ProgVisitor cg = new ProgVisitor();
+    cg.visit((Program)ast, null);
 
     return code;
   }
 
 
 
-  public class ProgVisitor<R,A> implements javalette.Absyn.Prog.Visitor<R,A>
+  public class ProgVisitor implements javalette.Absyn.Prog.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Program p, A arg)
-    { /* Code for Program goes here */
+    public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
+    { 
+      currentFunction = "";
+
+      // Overhead  
+      code.println("declare void @printInt(i32)");
+      code.println("declare void @printDouble(double)");
+      code.println("declare void @printString(i8*)");
+      code.println("declare i32 @readInt()");
+      code.println("declare double @readDouble()");
+
       for (javalette.Absyn.TopDef x: p.listtopdef_) {
-        x.accept(new TopDefVisitor<R,A>(), arg);
+        x.accept(new TopDefVisitor(), null);
       }
       return null;
     }
   }
-  public class TopDefVisitor<R,A> implements javalette.Absyn.TopDef.Visitor<R,A>
+  public class TopDefVisitor implements javalette.Absyn.TopDef.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.FnDef p, A arg)
+    public java.lang.Void visit(javalette.Absyn.FnDef p, java.lang.Void arg)
     { /* Code for FnDef goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.ident_;
-      for (javalette.Absyn.Arg x: p.listarg_) {
-        x.accept(new ArgVisitor<R,A>(), arg);
+      createStackFrame();
+      LinkedList<Arg> args = new LinkedList<Arg>();
+
+      currentFunction = p.ident_;
+
+      code.print("define " + TypeToString(p.type_) + " @" + p.ident_ + "(");
+
+      for (int i = 0; i < p.listarg_.size(); i++) {
+        javalette.Absyn.Arg x = p.listarg_.get(i);
+        Arg a = x.accept(new ArgVisitor(), arg);
+        args.add(a);
+        if (i < p.listarg_.size() - 1) code.print(", ");
       }
-      p.blk_.accept(new BlkVisitor<R,A>(), arg);
+      code.print(") {\n");
+      code.print("entry: ");
+      /* TODO: initialize arguments as variables */
+
+      p.blk_.accept(new BlkVisitor(), false);
+
+      code.print("}\n");
+
+      removeTopStackFrame();
       return null;
     }
   }
-  public class ArgVisitor<R,A> implements javalette.Absyn.Arg.Visitor<R,A>
+  public class ArgVisitor implements javalette.Absyn.Arg.Visitor<Arg,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Argument p, A arg)
+    public Arg visit(javalette.Absyn.Argument p, java.lang.Void arg)
     { /* Code for Argument goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
-      //p.ident_;
-      return null;
+      Arg a = new Arg(new Reg(TypeToString(p.type_)), p.type_, p.ident_);
+      code.print(TypeToString(a.type_) + " " + a.reg_.Ident_);
+      return a;
     }
   }
-  public class BlkVisitor<R,A> implements javalette.Absyn.Blk.Visitor<R,A>
+  public class BlkVisitor implements javalette.Absyn.Blk.Visitor<java.lang.Void,Boolean>
   {
-    public R visit(javalette.Absyn.Block p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Block p, Boolean createStackframe)
     { /* Code for Block goes here */
+      if (createStackframe) createStackFrame();
       for (javalette.Absyn.Stmt x: p.liststmt_) {
-        x.accept(new StmtVisitor<R,A>(), arg);
+        //x.accept(new StmtVisitor<R,A>(), arg);
       }
+      if (createStackframe) removeTopStackFrame();
       return null;
     }
   }
@@ -92,7 +168,7 @@ public class CodeGenerator {
     }
     public R visit(javalette.Absyn.BStmt p, A arg)
     { /* Code for BStmt goes here */
-      p.blk_.accept(new BlkVisitor<R,A>(), arg);
+      p.blk_.accept(new BlkVisitor(), true);
       return null;
     }
     public R visit(javalette.Absyn.Decl p, A arg)

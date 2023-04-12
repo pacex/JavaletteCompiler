@@ -33,27 +33,40 @@ public class Test
     p = new parser(l, l.getSymbolFactory());
   }
 
-  public javalette.Absyn.Prog parse() throws Exception
+  public javalette.Absyn.Prog parse(boolean printast) throws Exception
   {
     /* The default parser is the first-defined entry point. */
     javalette.Absyn.Prog ast = p.pProg();
 
-    /*
-    System.out.println();
-    System.out.println("Parse Succesful!");
-    System.out.println();
-    System.out.println("[Abstract Syntax]");
-    System.out.println();
-    System.out.println(PrettyPrinter.show(ast));
-    System.out.println();
-    System.out.println("[Linearized Tree]");
-    System.out.println();
-    System.out.println(PrettyPrinter.print(ast)); */
+    if (printast){
+      System.out.println();
+      System.out.println("Parse Succesful!");
+      System.out.println();
+      System.out.println("[Abstract Syntax]");
+      System.out.println();
+      System.out.println(PrettyPrinter.show(ast));
+      System.out.println();
+      System.out.println("[Linearized Tree]");
+      System.out.println();
+      System.out.println(PrettyPrinter.print(ast));
+    }
     return ast;
   }
 
   public static void main(String args[]) throws Exception
   {
+    boolean printast = false;
+    boolean generateLLVM = true;
+
+    for(int i = 1; i < args.length; i++){
+      String arg = args[i];
+      if (arg.equals("--printast")) printast = true;
+      else if (arg.equals("--nooutput")) generateLLVM = false;
+      else{
+        System.err.println("ERROR\nUnkown argument: '" + arg + "'!");
+      }
+    }
+
     // Lexer
     Test t = new Test(args);
 
@@ -62,7 +75,7 @@ public class Test
 
     try
     {
-      ast = t.parse();
+      ast = t.parse(printast);
     }
     catch(Throwable e)
     {
@@ -77,9 +90,11 @@ public class Test
     tc.typeCheck();
 
     // Code Generator
-    CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions());
-    PrintStream code = cg.generateCode();
-    code.close();
+    if (generateLLVM){
+      CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions());
+      PrintStream code = cg.generateCode();
+      code.close();
+    }
 
     // AST Valid
     System.err.println("OK");
