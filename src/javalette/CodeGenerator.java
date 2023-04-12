@@ -16,6 +16,7 @@ public class CodeGenerator {
   private Prog ast;
   private PrintStream code;
   private HashMap<String, FuncType> functions;
+  private HashMap<Expr,Type> expressions;
   private LinkedList<HashMap<String,Var>> stack;
 
   public CodeGenerator(Prog ast, HashMap<String,FuncType> functions){
