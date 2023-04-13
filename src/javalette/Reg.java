@@ -12,4 +12,8 @@ public class Reg {
         Ident_ = "%t" + String.valueOf(count);
         count++;
     }
+
+    public String TypeAndIdent(){
+        return Type_ + " " + Ident_;
+    }
 }

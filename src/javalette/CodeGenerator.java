@@ -129,7 +129,17 @@ public class CodeGenerator {
       }
       code.print(") {\n");
       code.print("entry: ");
-      /* TODO: initialize arguments as variables */
+      
+      // Treat arguments as variables on stack
+      for (Arg a : args){
+        Reg memPtr = new Reg(TypeToString(a.type_) + "*"); // Create handle for memPtr register
+        code.println(memPtr.Ident_ + " = alloca " + TypeToString(a.type_)); // Memory allocation
+        
+        Var v = new Var(memPtr, a.type_); // Add variable to stackframe
+        addVarToStackFrame(a.ident_, v);
+
+        code.println("store " + a.reg_.TypeAndIdent() + " , " + memPtr.TypeAndIdent()); // Store value from argument register
+      }
 
       p.blk_.accept(new BlkVisitor(), false);
 
@@ -154,92 +164,105 @@ public class CodeGenerator {
     { /* Code for Block goes here */
       if (createStackframe) createStackFrame();
       for (javalette.Absyn.Stmt x: p.liststmt_) {
-        //x.accept(new StmtVisitor<R,A>(), arg);
+        x.accept(new StmtVisitor(), null);
       }
       if (createStackframe) removeTopStackFrame();
       return null;
     }
   }
-  public class StmtVisitor<R,A> implements javalette.Absyn.Stmt.Visitor<R,A>
+  public class StmtVisitor implements javalette.Absyn.Stmt.Visitor<java.lang.Void,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Empty p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Empty p, java.lang.Void arg)
     { /* Code for Empty goes here */
       return null;
     }
-    public R visit(javalette.Absyn.BStmt p, A arg)
+    public java.lang.Void visit(javalette.Absyn.BStmt p, java.lang.Void arg)
     { /* Code for BStmt goes here */
       p.blk_.accept(new BlkVisitor(), true);
       return null;
     }
-    public R visit(javalette.Absyn.Decl p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Decl p, java.lang.Void arg)
     { /* Code for Decl goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.type_.accept(new TypeVisitor<R,A>(), arg);
       for (javalette.Absyn.Item x: p.listitem_) {
-        x.accept(new ItemVisitor<R,A>(), arg);
+        x.accept(new ItemVisitor(), p.type_);
       }
       return null;
     }
-    public R visit(javalette.Absyn.Ass p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Ass p, java.lang.Void arg)
     { /* Code for Ass goes here */
       //p.ident_;
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.Incr p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
     { /* Code for Incr goes here */
       //p.ident_;
       return null;
     }
-    public R visit(javalette.Absyn.Decr p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Decr p, java.lang.Void arg)
     { /* Code for Decr goes here */
       //p.ident_;
       return null;
     }
-    public R visit(javalette.Absyn.Ret p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
     { /* Code for Ret goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.VRet p, A arg)
+    public java.lang.Void visit(javalette.Absyn.VRet p, java.lang.Void arg)
     { /* Code for VRet goes here */
       return null;
     }
-    public R visit(javalette.Absyn.Cond p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Cond p, java.lang.Void arg)
     { /* Code for Cond goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      p.stmt_.accept(new StmtVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.stmt_.accept(new StmtVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.CondElse p, A arg)
+    public java.lang.Void visit(javalette.Absyn.CondElse p, java.lang.Void arg)
     { /* Code for CondElse goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      p.stmt_1.accept(new StmtVisitor<R,A>(), arg);
-      p.stmt_2.accept(new StmtVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.stmt_1.accept(new StmtVisitor<R,A>(), arg);
+      //p.stmt_2.accept(new StmtVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.While p, A arg)
+    public java.lang.Void visit(javalette.Absyn.While p, java.lang.Void arg)
     { /* Code for While goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      p.stmt_.accept(new StmtVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.stmt_.accept(new StmtVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.SExp p, A arg)
+    public java.lang.Void visit(javalette.Absyn.SExp p, java.lang.Void arg)
     { /* Code for SExp goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
   }
-  public class ItemVisitor<R,A> implements javalette.Absyn.Item.Visitor<R,A>
+  public class ItemVisitor implements javalette.Absyn.Item.Visitor<java.lang.Void,Type>
   {
-    public R visit(javalette.Absyn.NoInit p, A arg)
+    public java.lang.Void visit(javalette.Absyn.NoInit p, Type t)
     { /* Code for NoInit goes here */
       //p.ident_;
+      Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
+      code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
+      
+      Var v = new Var(memPtr, t); // Add variable to stackframe
+      addVarToStackFrame(p.ident_, v);
       return null;
     }
-    public R visit(javalette.Absyn.Init p, A arg)
+    public java.lang.Void visit(javalette.Absyn.Init p, Type t)
     { /* Code for Init goes here */
       //p.ident_;
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
+      code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
+      
+      Var v = new Var(memPtr, t); // Add variable to stackframe
+      addVarToStackFrame(p.ident_, v);
+      
+      Reg e = p.expr_.accept(new ExprVisitor(), null);
+
+      code.println("store " + e.TypeAndIdent() + " , " + memPtr.TypeAndIdent()); // Store value from expression register
       return null;
     }
   }
@@ -270,85 +293,85 @@ public class CodeGenerator {
       return null;
     }
   }
-  public class ExprVisitor<R,A> implements javalette.Absyn.Expr.Visitor<R,A>
+  public class ExprVisitor implements javalette.Absyn.Expr.Visitor<Reg,java.lang.Void>
   {
-    public R visit(javalette.Absyn.EVar p, A arg)
+    public Reg visit(javalette.Absyn.EVar p, java.lang.Void arg)
     { /* Code for EVar goes here */
       //p.ident_;
       return null;
     }
-    public R visit(javalette.Absyn.ELitInt p, A arg)
+    public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
       //p.integer_;
       return null;
     }
-    public R visit(javalette.Absyn.ELitDoub p, A arg)
+    public Reg visit(javalette.Absyn.ELitDoub p, java.lang.Void arg)
     { /* Code for ELitDoub goes here */
       //p.double_;
       return null;
     }
-    public R visit(javalette.Absyn.ELitTrue p, A arg)
+    public Reg visit(javalette.Absyn.ELitTrue p, java.lang.Void arg)
     { /* Code for ELitTrue goes here */
       return null;
     }
-    public R visit(javalette.Absyn.ELitFalse p, A arg)
+    public Reg visit(javalette.Absyn.ELitFalse p, java.lang.Void arg)
     { /* Code for ELitFalse goes here */
       return null;
     }
-    public R visit(javalette.Absyn.EApp p, A arg)
+    public Reg visit(javalette.Absyn.EApp p, java.lang.Void arg)
     { /* Code for EApp goes here */
       //p.ident_;
       for (javalette.Absyn.Expr x: p.listexpr_) {
-        x.accept(new ExprVisitor<R,A>(), arg);
+        //x.accept(new ExprVisitor<R,A>(), arg);
       }
       return null;
     }
-    public R visit(javalette.Absyn.EString p, A arg)
+    public Reg visit(javalette.Absyn.EString p, java.lang.Void arg)
     { /* Code for EString goes here */
       //p.string_;
       return null;
     }
-    public R visit(javalette.Absyn.Neg p, A arg)
+    public Reg visit(javalette.Absyn.Neg p, java.lang.Void arg)
     { /* Code for Neg goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.Not p, A arg)
+    public Reg visit(javalette.Absyn.Not p, java.lang.Void arg)
     { /* Code for Not goes here */
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.EMul p, A arg)
+    public Reg visit(javalette.Absyn.EMul p, java.lang.Void arg)
     { /* Code for EMul goes here */
-      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
-      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      //p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
+      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.EAdd p, A arg)
+    public Reg visit(javalette.Absyn.EAdd p, java.lang.Void arg)
     { /* Code for EAdd goes here */
-      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      p.addop_.accept(new AddOpVisitor<R,A>(), arg);
-      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      //p.addop_.accept(new AddOpVisitor<R,A>(), arg);
+      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.ERel p, A arg)
+    public Reg visit(javalette.Absyn.ERel p, java.lang.Void arg)
     { /* Code for ERel goes here */
-      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      p.relop_.accept(new RelOpVisitor<R,A>(), arg);
-      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      //p.relop_.accept(new RelOpVisitor<R,A>(), arg);
+      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.EAnd p, A arg)
+    public Reg visit(javalette.Absyn.EAnd p, java.lang.Void arg)
     { /* Code for EAnd goes here */
-      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
-    public R visit(javalette.Absyn.EOr p, A arg)
+    public Reg visit(javalette.Absyn.EOr p, java.lang.Void arg)
     { /* Code for EOr goes here */
-      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
   }
