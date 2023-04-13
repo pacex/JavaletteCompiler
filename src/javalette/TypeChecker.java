@@ -38,6 +38,7 @@ public class TypeChecker
 
   private HashMap<String, FuncType> functions;
   private HashMap<Expr, Type> expressions;
+  private LinkedList<EString> stringLiterals;
   private LinkedList<HashMap<String, Type>> stack;
 
   public HashMap<String, FuncType> getFunctions(){
@@ -46,6 +47,10 @@ public class TypeChecker
 
   public HashMap<Expr, Type> getExpressions(){
     return expressions;
+  }
+
+  public LinkedList<EString> getStringLiterals(){
+    return stringLiterals;
   }
 
   // Type checker state variables
@@ -80,6 +85,7 @@ public class TypeChecker
     this.ast = ast;
     this.functions = new HashMap<String,FuncType>();
     this.expressions = new HashMap<Expr,Type>();
+    this.stringLiterals = new LinkedList<EString>();
     this.stack = new LinkedList<HashMap<String,Type>>();
 
     this.currentFunction = "";
@@ -522,6 +528,8 @@ public class TypeChecker
       if (p.ident_.equals("printString")){
         if (p.listexpr_.size() != 1) abort("Call to function 'printString' expected 1 argument(s). " + p.listexpr_.size() + " arguments given.");
         if (!(p.listexpr_.get(0) instanceof EString)) abort("Function 'printString' expects string literal!");
+        EString str = (EString)p.listexpr_.get(0);
+        stringLiterals.add(str);
         return new Void();
       }
 

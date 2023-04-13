@@ -42,6 +42,9 @@ public class CodeGenerator {
   private HashMap<Expr,Type> expressions;
   private LinkedList<HashMap<String,Var>> stack;
 
+  private LinkedList<EString> stringLiterals;
+  private HashMap<EString, String> stringLiteralIdentifiers;
+
   private String currentFunction;
 
   // region Stack Frame Methods
@@ -68,10 +71,12 @@ public class CodeGenerator {
   }
   // endregion
 
-  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions, HashMap<Expr,Type> expressions){
+  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions, HashMap<Expr,Type> expressions, LinkedList<EString> stringLiterals){
       this.ast = ast;
       this.functions = functions;
       this.expressions = expressions;
+      this.stringLiterals = stringLiterals;
+      this.stringLiteralIdentifiers = new HashMap<EString, String>();
       this.code = new PrintStream(System.out, false);
       this.stack = new LinkedList<HashMap<String,Var>>();
       this.currentFunction = "";
@@ -101,6 +106,23 @@ public class CodeGenerator {
       code.println("declare void @printString(i8*)");
       code.println("declare i32 @readInt()");
       code.println("declare double @readDouble()");
+
+      // Constants
+      code.println("@zeroInt = internal constant i32 0");
+      code.println("@zeroDouble = internal constant double 0.0");
+      code.println("@true = internal constant i1 true");
+      code.println("@false = internal constant i1 false");
+
+      // String literals
+      int strCnt = 0;
+      for (EString estr : stringLiterals){
+        String ident = "@hw" + Integer.valueOf(strCnt);
+        code.println(ident + " = internal constant [" + 
+          Integer.valueOf(estr.string_.length() + 2) + " x i8] c\"" + estr.string_ + "\\0A\\00\"");
+        /*code.println(ident + " = internal constant [" + 
+          Integer.valueOf(estr.string_.length()) + " x i8] c\"" + estr.string_ + "\"");*/
+        stringLiteralIdentifiers.put(estr, ident);
+      }
 
       for (javalette.Absyn.TopDef x: p.listtopdef_) {
         x.accept(new TopDefVisitor(), null);
@@ -207,11 +229,13 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
     { /* Code for Ret goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      Reg r = p.expr_.accept(new ExprVisitor(), null);
+      code.println("ret " + r.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.VRet p, java.lang.Void arg)
     { /* Code for VRet goes here */
+      code.println("ret void");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Cond p, java.lang.Void arg)
@@ -235,7 +259,22 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.SExp p, java.lang.Void arg)
     { /* Code for SExp goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      EApp f = (EApp)p.expr_;
+      LinkedList<Reg> argRegs = new LinkedList<Reg>();
+
+      // Get all arguments' registers
+      for(Expr e : f.listexpr_){
+        argRegs.add(e.accept(new ExprVisitor(), null));
+      }
+
+      code.print("call void @" + f.ident_ + "(");
+
+      for(int i = 0; i < argRegs.size(); i++){
+        code.print(argRegs.get(i).TypeAndIdent());
+        if (i < argRegs.size() - 1) code.print(", ");
+      }
+      code.print(")\n");
+
       return null;
     }
   }
@@ -303,7 +342,11 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
       //p.integer_;
-      return null;
+      Reg z = new Reg("i32");
+      Reg r = new Reg("i32");
+      code.println(z.Ident_ + " = load i32, i32* @zeroInt");
+      code.println(r.Ident_ + " = add " + z.TypeAndIdent() + ", " + Integer.valueOf(p.integer_));
+      return r;
     }
     public Reg visit(javalette.Absyn.ELitDoub p, java.lang.Void arg)
     { /* Code for ELitDoub goes here */
@@ -328,8 +371,8 @@ public class CodeGenerator {
     }
     public Reg visit(javalette.Absyn.EString p, java.lang.Void arg)
     { /* Code for EString goes here */
-      //p.string_;
-      return null;
+      Reg r = new Reg("i8*", stringLiteralIdentifiers.get(p));
+      return r;
     }
     public Reg visit(javalette.Absyn.Neg p, java.lang.Void arg)
     { /* Code for Neg goes here */

@@ -91,7 +91,7 @@ public class Test
 
     // Code Generator
     if (generateLLVM){
-      CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions());
+      CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions(), tc.getStringLiterals());
       PrintStream code = cg.generateCode();
       code.close();
     }

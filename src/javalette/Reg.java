@@ -7,6 +7,11 @@ public class Reg {
     public String Ident_;
     public String Type_;
 
+    public Reg(String type, String ident){
+        Type_ = type;
+        Ident_ = ident;
+    }
+
     public Reg(String type){
         Type_ = type;
         Ident_ = "%t" + String.valueOf(count);
