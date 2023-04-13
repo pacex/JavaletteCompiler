@@ -118,7 +118,7 @@ public class CodeGenerator {
       for (EString estr : stringLiterals){
         String ident = "@hw" + Integer.valueOf(strCnt);
         code.println(ident + " = internal constant [" + 
-          Integer.valueOf(estr.string_.length() + 2) + " x i8] c\"" + estr.string_ + "\\0A\\00\"");
+          Integer.valueOf(estr.string_.length() + 1) + " x i8] c\"" + estr.string_ + "\\00\"");
         /*code.println(ident + " = internal constant [" + 
           Integer.valueOf(estr.string_.length()) + " x i8] c\"" + estr.string_ + "\"");*/
         stringLiteralIdentifiers.put(estr, ident);
