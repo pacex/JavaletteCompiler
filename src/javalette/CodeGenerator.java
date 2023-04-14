@@ -108,10 +108,12 @@ public class CodeGenerator {
       code.println("declare double @readDouble()");
 
       // Constants
+      /*
       code.println("@zeroInt = internal constant i32 0");
       code.println("@zeroDouble = internal constant double 0.0");
       code.println("@true = internal constant i1 true");
       code.println("@false = internal constant i1 false");
+      */
 
       // String literals
       int strCnt = 0;
@@ -122,6 +124,7 @@ public class CodeGenerator {
         /*code.println(ident + " = internal constant [" + 
           Integer.valueOf(estr.string_.length()) + " x i8] c\"" + estr.string_ + "\"");*/
         stringLiteralIdentifiers.put(estr, ident);
+        strCnt++;
       }
 
       for (javalette.Absyn.TopDef x: p.listtopdef_) {
@@ -212,8 +215,11 @@ public class CodeGenerator {
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Ass p, java.lang.Void arg)
-    { /* Code for Ass goes here */
-      //p.ident_;
+    { 
+      // Get assignment expression register
+      Reg rhs = p.expr_.accept(new ExprVisitor(), null);
+      Var v = getVar(p.ident_);
+      code.println("store " + rhs.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
       //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
@@ -301,7 +307,7 @@ public class CodeGenerator {
       
       Reg e = p.expr_.accept(new ExprVisitor(), null);
 
-      code.println("store " + e.TypeAndIdent() + " , " + memPtr.TypeAndIdent()); // Store value from expression register
+      code.println("store " + e.TypeAndIdent() + ", " + memPtr.TypeAndIdent()); // Store value from expression register
       return null;
     }
   }
@@ -336,38 +342,60 @@ public class CodeGenerator {
   {
     public Reg visit(javalette.Absyn.EVar p, java.lang.Void arg)
     { /* Code for EVar goes here */
-      //p.ident_;
-      return null;
+      Var v = getVar(p.ident_);
+      Reg r = new Reg(TypeToString(expressions.get(p)));
+      code.println(r.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
+      return r;
     }
     public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
       //p.integer_;
-      Reg z = new Reg("i32");
+      //Reg z = new Reg("i32");
       Reg r = new Reg("i32");
-      code.println(z.Ident_ + " = load i32, i32* @zeroInt");
-      code.println(r.Ident_ + " = add " + z.TypeAndIdent() + ", " + Integer.valueOf(p.integer_));
+      //code.println(z.Ident_ + " = load i32, i32* @zeroInt");
+      //code.println(r.Ident_ + " = add " + z.TypeAndIdent() + ", " + Integer.valueOf(p.integer_));
+      code.println(r.Ident_ + " = add i32 0, " + Integer.valueOf(p.integer_));
       return r;
     }
     public Reg visit(javalette.Absyn.ELitDoub p, java.lang.Void arg)
     { /* Code for ELitDoub goes here */
-      //p.double_;
-      return null;
+      //Reg z = new Reg("double");
+      Reg r = new Reg("double");
+      //code.println(z.Ident_ + " = load double, double* @zeroDouble");
+      code.println(r.Ident_ + " = fadd double 0.0, " + Double.valueOf(p.double_));
+      return r;
     }
     public Reg visit(javalette.Absyn.ELitTrue p, java.lang.Void arg)
     { /* Code for ELitTrue goes here */
-      return null;
+      Reg r = new Reg("i1");
+      code.println(r.Ident_ + " = and i1 true, true");
+      return r;
     }
     public Reg visit(javalette.Absyn.ELitFalse p, java.lang.Void arg)
     { /* Code for ELitFalse goes here */
-      return null;
+      Reg r = new Reg("i1");
+      code.println(r.Ident_ + " = and i1 false, false");
+      return r;
     }
     public Reg visit(javalette.Absyn.EApp p, java.lang.Void arg)
     { /* Code for EApp goes here */
-      //p.ident_;
-      for (javalette.Absyn.Expr x: p.listexpr_) {
-        //x.accept(new ExprVisitor<R,A>(), arg);
+      LinkedList<Reg> argRegs = new LinkedList<Reg>();
+      Type t = expressions.get(p);
+
+      // Get all arguments' registers
+      for(Expr e : p.listexpr_){
+        argRegs.add(e.accept(new ExprVisitor(), null));
       }
-      return null;
+      Reg r = new Reg(TypeToString(t));
+      code.print(r.Ident_ + " = call " + TypeToString(t) + " @" + p.ident_ + "(");
+
+      for(int i = 0; i < argRegs.size(); i++){
+        code.print(argRegs.get(i).TypeAndIdent());
+        if (i < argRegs.size() - 1) code.print(", ");
+      }
+      code.print(")\n");
+
+      return r;
     }
     public Reg visit(javalette.Absyn.EString p, java.lang.Void arg)
     { /* Code for EString goes here */
@@ -376,27 +404,44 @@ public class CodeGenerator {
     }
     public Reg visit(javalette.Absyn.Neg p, java.lang.Void arg)
     { /* Code for Neg goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op = p.expr_.accept(new ExprVisitor(), null);
+      Type t = expressions.get(p);
+      Reg r = new Reg(TypeToString(t));
+      
+      if (t instanceof Int) code.println(r.Ident_ + " = mul i32 -1, " + op.Ident_);
+      else code.println(r.Ident_ + " = fmul double -1.0, " + op.Ident_);
+      return r;
     }
     public Reg visit(javalette.Absyn.Not p, java.lang.Void arg)
     { /* Code for Not goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op = p.expr_.accept(new ExprVisitor(), null);
+      Reg r = new Reg(TypeToString(expressions.get(p)));
+      code.println(r.Ident_ + " = xor i1 true, " + op.Ident_);
+      return r;
     }
     public Reg visit(javalette.Absyn.EMul p, java.lang.Void arg)
     { /* Code for EMul goes here */
-      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      Type t = expressions.get(p);
+      Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
       //p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
-      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
+      Reg r = new Reg(TypeToString(t));
+
+      if (t instanceof Int) code.println(r.Ident_ + " = mul i32 " + op1.Ident_ + ", " + op2.Ident_);
+      else code.println(r.Ident_ + " = fmul double " + op1.Ident_ + ", " + op2.Ident_);
+      return r;
     }
     public Reg visit(javalette.Absyn.EAdd p, java.lang.Void arg)
     { /* Code for EAdd goes here */
-      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      //p.addop_.accept(new AddOpVisitor<R,A>(), arg);
-      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Type t = expressions.get(p);
+      Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
+      //p.mulop_.accept(new AddOpVisitor<R,A>(), arg);
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
+      Reg r = new Reg(TypeToString(t));
+
+      if (t instanceof Int) code.println(r.Ident_ + " = add i32 " + op1.Ident_ + ", " + op2.Ident_);
+      else code.println(r.Ident_ + " = fadd double " + op1.Ident_ + ", " + op2.Ident_);
+      return r;
     }
     public Reg visit(javalette.Absyn.ERel p, java.lang.Void arg)
     { /* Code for ERel goes here */
