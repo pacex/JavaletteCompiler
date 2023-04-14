@@ -46,6 +46,13 @@ public class CodeGenerator {
   private HashMap<EString, String> stringLiteralIdentifiers;
 
   private String currentFunction;
+  private int labelCounter;
+
+  private String getNewLabel(){
+    String l = "lab" + Integer.valueOf(labelCounter);
+    labelCounter++;
+    return l;
+  }
 
   // region Stack Frame Methods
   private void createStackFrame(){
@@ -80,6 +87,7 @@ public class CodeGenerator {
       this.code = new PrintStream(System.out, false);
       this.stack = new LinkedList<HashMap<String,Var>>();
       this.currentFunction = "";
+      this.labelCounter = 0;
   }
 
   public PrintStream generateCode(){
@@ -294,6 +302,15 @@ public class CodeGenerator {
       
       Var v = new Var(memPtr, t); // Add variable to stackframe
       addVarToStackFrame(p.ident_, v);
+
+      // Initialize variable to 0, 0.0 or false
+      Reg e = new Reg(TypeToString(t));
+      if (t instanceof Int) code.println(e.Ident_ + " = add i32 0, 0");
+      else if (t instanceof Doub) code.println(e.Ident_ + " = fadd double 0.0, 0.0");
+      else code.println(e.Ident_ + " = add i1 false, false");
+      
+      code.println("store " + e.TypeAndIdent() + ", " + memPtr.TypeAndIdent()); // Store value from expression register
+
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Init p, Type t)
@@ -423,97 +440,146 @@ public class CodeGenerator {
     { /* Code for EMul goes here */
       Type t = expressions.get(p);
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
-      //p.mulop_.accept(new MulOpVisitor<R,A>(), arg);
+      String operator = p.mulop_.accept(new MulOpVisitor(), arg);
       Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
       Reg r = new Reg(TypeToString(t));
 
-      if (t instanceof Int) code.println(r.Ident_ + " = mul i32 " + op1.Ident_ + ", " + op2.Ident_);
-      else code.println(r.Ident_ + " = fmul double " + op1.Ident_ + ", " + op2.Ident_);
+      if (t instanceof Int){
+        if (operator.equals("div")) operator = "sdiv";
+        code.println(r.Ident_ + " = " + operator + " i32 " + op1.Ident_ + ", " + op2.Ident_);
+      } 
+      else code.println(r.Ident_ + " = f" + operator + " double " + op1.Ident_ + ", " + op2.Ident_);
       return r;
     }
     public Reg visit(javalette.Absyn.EAdd p, java.lang.Void arg)
     { /* Code for EAdd goes here */
       Type t = expressions.get(p);
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
-      //p.mulop_.accept(new AddOpVisitor<R,A>(), arg);
+      String operator = p.addop_.accept(new AddOpVisitor(), arg);
       Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
       Reg r = new Reg(TypeToString(t));
 
-      if (t instanceof Int) code.println(r.Ident_ + " = add i32 " + op1.Ident_ + ", " + op2.Ident_);
-      else code.println(r.Ident_ + " = fadd double " + op1.Ident_ + ", " + op2.Ident_);
+      if (t instanceof Int) {
+        code.println(r.Ident_ + " = " + operator + " i32 " + op1.Ident_ + ", " + op2.Ident_);
+      }
+      else code.println(r.Ident_ + " = f" + operator + " double " + op1.Ident_ + ", " + op2.Ident_);
       return r;
     }
     public Reg visit(javalette.Absyn.ERel p, java.lang.Void arg)
     { /* Code for ERel goes here */
-      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      //p.relop_.accept(new RelOpVisitor<R,A>(), arg);
-      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op1 = p.expr_1.accept(new ExprVisitor(), arg);
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), arg);
+      Type t = expressions.get(p.expr_1);
+
+      String opCode = (t instanceof Doub) ? "fcmp" : "icmp";
+      String condCode = p.relop_.accept(new RelOpVisitor(), t);
+      Reg r = new Reg("i1");
+
+      code.println(opCode + " " + condCode + " " + op1.TypeAndIdent() + ", " + op2.Ident_);
+      return r;
     }
     public Reg visit(javalette.Absyn.EAnd p, java.lang.Void arg)
     { /* Code for EAnd goes here */
-      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
+      Reg r = new Reg("i1");
+      String labTrue = getNewLabel();
+      String labFalse = getNewLabel();
+      String labEnd = getNewLabel();
+      code.println("br i1 " + op1.Ident_ + ", label %" + labTrue + ", label %" + labFalse);
+
+      // True
+      code.print(labTrue + ": ");
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
+      code.println(r.Ident_ + " = and i1 true, " + op2.Ident_);
+      code.println("br label %"+labEnd);
+
+      // False
+      code.println(labFalse + ": " + r.Ident_ + "= and i1 false, false");
+      code.println("br label %" + labEnd);
+
+      code.print(labEnd + ": ");
+      return r;
     }
     public Reg visit(javalette.Absyn.EOr p, java.lang.Void arg)
     { /* Code for EOr goes here */
-      //p.expr_1.accept(new ExprVisitor<R,A>(), arg);
-      //p.expr_2.accept(new ExprVisitor<R,A>(), arg);
-      return null;
+      Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
+      Reg r = new Reg("i1");
+      String labTrue = getNewLabel();
+      String labFalse = getNewLabel();
+      String labEnd = getNewLabel();
+      code.println("br i1 " + op1.Ident_ + ", label %" + labTrue + ", label %" + labFalse);
+
+      // True
+      code.print(labFalse + ": ");
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
+      code.println(r.Ident_ + " = or i1 true, " + op2.Ident_);
+      code.println("br label %"+labEnd);
+
+      // False
+      code.println(labTrue + ": " + r.Ident_ + " = and i1 true, true");
+      code.println("br label %" + labEnd);
+
+      code.print(labEnd + ": ");
+      return r;
     }
   }
-  public class AddOpVisitor<R,A> implements javalette.Absyn.AddOp.Visitor<R,A>
+  public class AddOpVisitor implements javalette.Absyn.AddOp.Visitor<String,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Plus p, A arg)
+    public String visit(javalette.Absyn.Plus p, java.lang.Void arg)
     { /* Code for Plus goes here */
-      return null;
+      return "add";
     }
-    public R visit(javalette.Absyn.Minus p, A arg)
+    public String visit(javalette.Absyn.Minus p, java.lang.Void arg)
     { /* Code for Minus goes here */
-      return null;
+      return "sub";
     }
   }
-  public class MulOpVisitor<R,A> implements javalette.Absyn.MulOp.Visitor<R,A>
+  public class MulOpVisitor implements javalette.Absyn.MulOp.Visitor<String,java.lang.Void>
   {
-    public R visit(javalette.Absyn.Times p, A arg)
+    public String visit(javalette.Absyn.Times p, java.lang.Void arg)
     { /* Code for Times goes here */
-      return null;
+      return "mul";
     }
-    public R visit(javalette.Absyn.Div p, A arg)
+    public String visit(javalette.Absyn.Div p, java.lang.Void arg)
     { /* Code for Div goes here */
-      return null;
+      return "div";
     }
-    public R visit(javalette.Absyn.Mod p, A arg)
+    public String visit(javalette.Absyn.Mod p, java.lang.Void arg)
     { /* Code for Mod goes here */
-      return null;
+      return "srem";
     }
   }
-  public class RelOpVisitor<R,A> implements javalette.Absyn.RelOp.Visitor<R,A>
+  public class RelOpVisitor implements javalette.Absyn.RelOp.Visitor<String,Type>
   {
-    public R visit(javalette.Absyn.LTH p, A arg)
+    public String visit(javalette.Absyn.LTH p, Type arg)
     { /* Code for LTH goes here */
-      return null;
+      if (arg instanceof Int) return "slt";
+      return "olt";
     }
-    public R visit(javalette.Absyn.LE p, A arg)
+    public String visit(javalette.Absyn.LE p, Type arg)
     { /* Code for LE goes here */
-      return null;
+      if (arg instanceof Int) return "sle";
+      return "ole";
     }
-    public R visit(javalette.Absyn.GTH p, A arg)
+    public String visit(javalette.Absyn.GTH p, Type arg)
     { /* Code for GTH goes here */
-      return null;
+      if (arg instanceof Int) return "sgt";
+      return "ogt";
     }
-    public R visit(javalette.Absyn.GE p, A arg)
+    public String visit(javalette.Absyn.GE p, Type arg)
     { /* Code for GE goes here */
-      return null;
+      if (arg instanceof Int) return "sge";
+      return "oge";
     }
-    public R visit(javalette.Absyn.EQU p, A arg)
+    public String visit(javalette.Absyn.EQU p, Type arg)
     { /* Code for EQU goes here */
-      return null;
+      if (arg instanceof Int || arg instanceof Bool) return "eq";
+      return "oeq";
     }
-    public R visit(javalette.Absyn.NE p, A arg)
+    public String visit(javalette.Absyn.NE p, Type arg)
     { /* Code for NE goes here */
-      return null;
+      if (arg instanceof Int || arg instanceof Bool) return "ne";
+      return "one";
     }
   }
 }
