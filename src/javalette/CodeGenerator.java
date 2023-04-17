@@ -39,13 +39,13 @@ public class CodeGenerator {
   private Prog ast;
   private PrintStream code;
   private HashMap<String, FuncType> functions;
-  private HashMap<Expr,Type> expressions;
+  private HashMap<Expr,Type> expressions; // unused
   private LinkedList<HashMap<String,Var>> stack;
 
   private LinkedList<EString> stringLiterals;
   private HashMap<EString, String> stringLiteralIdentifiers;
 
-  private String currentFunction;
+  private String currentFunction; // unused
   private int labelCounter;
 
   private String getNewLabel(){
@@ -176,6 +176,13 @@ public class CodeGenerator {
 
       p.blk_.accept(new BlkVisitor(), false);
 
+      if (p.type_ instanceof javalette.Absyn.Void) code.println("ret void");
+      else if (p.type_ instanceof Int) code.println("ret i32 0");
+      else if (p.type_ instanceof Bool) code.println("ret i1 false");
+      else if (p.type_ instanceof Doub) code.println("ret double 0.0");
+        
+      
+
       code.print("}\n");
 
       removeTopStackFrame();
@@ -233,12 +240,22 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
     { /* Code for Incr goes here */
-      //p.ident_;
+      Var v = getVar(p.ident_);
+      Reg prior = new Reg(TypeToString(v.type_));
+      code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
+      Reg posterior = new Reg(TypeToString(v.type_));
+      code.println(posterior.Ident_ + " = add " + prior.TypeAndIdent() + ", 1");
+      code.println("store " + posterior.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Decr p, java.lang.Void arg)
     { /* Code for Decr goes here */
-      //p.ident_;
+      Var v = getVar(p.ident_);
+      Reg prior = new Reg(TypeToString(v.type_));
+      code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
+      Reg posterior = new Reg(TypeToString(v.type_));
+      code.println(posterior.Ident_ + " = sub " + prior.TypeAndIdent() + ", 1");
+      code.println("store " + posterior.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
@@ -254,21 +271,63 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.Cond p, java.lang.Void arg)
     { /* Code for Cond goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      //p.stmt_.accept(new StmtVisitor<R,A>(), arg);
+      Reg expr = p.expr_.accept(new ExprVisitor(), null);
+      String labTrue = getNewLabel();
+      String labEnd = getNewLabel();
+
+      code.println("br " + expr.TypeAndIdent() + ", label %" + labTrue + ", label %" + labEnd);
+
+      // If block
+      code.print(labTrue + ": ");
+      p.stmt_.accept(new StmtVisitor(), null);
+      code.println("br label %" + labEnd);
+
+      // End
+      code.print(labEnd + ": ");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.CondElse p, java.lang.Void arg)
     { /* Code for CondElse goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      //p.stmt_1.accept(new StmtVisitor<R,A>(), arg);
-      //p.stmt_2.accept(new StmtVisitor<R,A>(), arg);
+      Reg expr = p.expr_.accept(new ExprVisitor(), null);
+      String labTrue = getNewLabel();
+      String labFalse = getNewLabel();
+      String labEnd = getNewLabel();
+
+      code.println("br " + expr.TypeAndIdent() + ", label %" + labTrue + ", label %" + labFalse);
+
+      // If block
+      code.print(labTrue + ": ");
+      p.stmt_1.accept(new StmtVisitor(), null);
+      code.println("br label %" + labEnd);
+
+      // Else block
+      code.print(labFalse + ": ");
+      p.stmt_2.accept(new StmtVisitor(), null);
+      code.println("br label %" + labEnd);
+
+      // End
+      code.print(labEnd + ": ");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.While p, java.lang.Void arg)
     { /* Code for While goes here */
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      //p.stmt_.accept(new StmtVisitor<R,A>(), arg);
+      String labStart = getNewLabel();
+      String labBlock = getNewLabel();
+      String labEnd = getNewLabel();
+      code.println("br label %" + labStart);
+
+      // Check condition
+      code.print(labStart + ": ");
+      Reg expr = p.expr_.accept(new ExprVisitor(), null);
+      code.println("br " + expr.TypeAndIdent() + ", label %" + labBlock + ", label %" + labEnd);
+
+      // Block
+      code.print(labBlock + ": ");
+      p.stmt_.accept(new StmtVisitor(), arg);
+      code.println("br label %" + labStart);
+      
+      // End loop
+      code.println(labEnd + ": ");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.SExp p, java.lang.Void arg)
@@ -319,11 +378,11 @@ public class CodeGenerator {
       Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
       code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
       
+      Reg e = p.expr_.accept(new ExprVisitor(), null);
+
       Var v = new Var(memPtr, t); // Add variable to stackframe
       addVarToStackFrame(p.ident_, v);
       
-      Reg e = p.expr_.accept(new ExprVisitor(), null);
-
       code.println("store " + e.TypeAndIdent() + ", " + memPtr.TypeAndIdent()); // Store value from expression register
       return null;
     }
@@ -397,7 +456,7 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.EApp p, java.lang.Void arg)
     { /* Code for EApp goes here */
       LinkedList<Reg> argRegs = new LinkedList<Reg>();
-      Type t = expressions.get(p);
+      Type t = functions.get(p.ident_).ret_;
 
       // Get all arguments' registers
       for(Expr e : p.listexpr_){
@@ -422,7 +481,7 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.Neg p, java.lang.Void arg)
     { /* Code for Neg goes here */
       Reg op = p.expr_.accept(new ExprVisitor(), null);
-      Type t = expressions.get(p);
+      Type t = op.GetType();
       Reg r = new Reg(TypeToString(t));
       
       if (t instanceof Int) code.println(r.Ident_ + " = mul i32 -1, " + op.Ident_);
@@ -432,14 +491,14 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.Not p, java.lang.Void arg)
     { /* Code for Not goes here */
       Reg op = p.expr_.accept(new ExprVisitor(), null);
-      Reg r = new Reg(TypeToString(expressions.get(p)));
+      Reg r = new Reg(op.Type_);
       code.println(r.Ident_ + " = xor i1 true, " + op.Ident_);
       return r;
     }
     public Reg visit(javalette.Absyn.EMul p, java.lang.Void arg)
     { /* Code for EMul goes here */
-      Type t = expressions.get(p);
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
+      Type t = op1.GetType();
       String operator = p.mulop_.accept(new MulOpVisitor(), arg);
       Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
       Reg r = new Reg(TypeToString(t));
@@ -453,8 +512,8 @@ public class CodeGenerator {
     }
     public Reg visit(javalette.Absyn.EAdd p, java.lang.Void arg)
     { /* Code for EAdd goes here */
-      Type t = expressions.get(p);
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
+      Type t = op1.GetType();
       String operator = p.addop_.accept(new AddOpVisitor(), arg);
       Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
       Reg r = new Reg(TypeToString(t));
@@ -469,7 +528,7 @@ public class CodeGenerator {
     { /* Code for ERel goes here */
       Reg op1 = p.expr_1.accept(new ExprVisitor(), arg);
       Reg op2 = p.expr_2.accept(new ExprVisitor(), arg);
-      Type t = expressions.get(p.expr_1);
+      Type t = op1.GetType();
 
       String opCode = (t instanceof Doub) ? "fcmp" : "icmp";
       String condCode = p.relop_.accept(new RelOpVisitor(), t);

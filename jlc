@@ -1,3 +1,3 @@
 #!/bin/sh
 BASEDIR=$(dirname "$0")
-$BASEDIR/src/run $1
+java -cp $BASEDIR/src:$CLASSPATH javalette.Test $1 $2 $3
