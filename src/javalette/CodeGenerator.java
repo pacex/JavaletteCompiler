@@ -115,14 +115,6 @@ public class CodeGenerator {
       code.println("declare i32 @readInt()");
       code.println("declare double @readDouble()");
 
-      // Constants
-      /*
-      code.println("@zeroInt = internal constant i32 0");
-      code.println("@zeroDouble = internal constant double 0.0");
-      code.println("@true = internal constant i1 true");
-      code.println("@false = internal constant i1 false");
-      */
-
       // String literals
       int strCnt = 0;
       for (EString estr : stringLiterals){
@@ -235,7 +227,6 @@ public class CodeGenerator {
       Reg rhs = p.expr_.accept(new ExprVisitor(), null);
       Var v = getVar(p.ident_);
       code.println("store " + rhs.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
-      //p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
@@ -355,7 +346,6 @@ public class CodeGenerator {
   {
     public java.lang.Void visit(javalette.Absyn.NoInit p, Type t)
     { /* Code for NoInit goes here */
-      //p.ident_;
       Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
       code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
       
@@ -374,7 +364,6 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.Init p, Type t)
     { /* Code for Init goes here */
-      //p.ident_;
       Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
       code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
       
@@ -387,33 +376,7 @@ public class CodeGenerator {
       return null;
     }
   }
-  public class TypeVisitor<R,A> implements javalette.Absyn.Type.Visitor<R,A>
-  {
-    public R visit(javalette.Absyn.Int p, A arg)
-    { /* Code for Int goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Doub p, A arg)
-    { /* Code for Doub goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Bool p, A arg)
-    { /* Code for Bool goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Void p, A arg)
-    { /* Code for Void goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Fun p, A arg)
-    { /* Code for Fun goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
-      for (javalette.Absyn.Type x: p.listtype_) {
-        x.accept(new TypeVisitor<R,A>(), arg);
-      }
-      return null;
-    }
-  }
+  
   public class ExprVisitor implements javalette.Absyn.Expr.Visitor<Reg,java.lang.Void>
   {
     public Reg visit(javalette.Absyn.EVar p, java.lang.Void arg)
