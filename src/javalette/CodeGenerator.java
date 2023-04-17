@@ -360,7 +360,7 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.EVar p, java.lang.Void arg)
     { /* Code for EVar goes here */
       Var v = getVar(p.ident_);
-      Reg r = new Reg(TypeToString(expressions.get(p)));
+      Reg r = new Reg(TypeToString(v.type_));
       code.println(r.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
       return r;
     }
@@ -475,51 +475,51 @@ public class CodeGenerator {
       String condCode = p.relop_.accept(new RelOpVisitor(), t);
       Reg r = new Reg("i1");
 
-      code.println(opCode + " " + condCode + " " + op1.TypeAndIdent() + ", " + op2.Ident_);
+      code.println(r.Ident_ + " = " + opCode + " " + condCode + " " + op1.TypeAndIdent() + ", " + op2.Ident_);
       return r;
     }
     public Reg visit(javalette.Absyn.EAnd p, java.lang.Void arg)
     { /* Code for EAnd goes here */
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
-      Reg r = new Reg("i1");
       String labTrue = getNewLabel();
-      String labFalse = getNewLabel();
       String labEnd = getNewLabel();
-      code.println("br i1 " + op1.Ident_ + ", label %" + labTrue + ", label %" + labFalse);
+      Reg memPtr = new Reg("i1*");
+      code.println(memPtr.Ident_ + " = alloca i1");
+      code.println("store i1 false, " + memPtr.TypeAndIdent());
+      code.println("br i1 " + op1.Ident_ + ", label %" + labTrue + ", label %" + labEnd);
 
       // True
       code.print(labTrue + ": ");
       Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
-      code.println(r.Ident_ + " = and i1 true, " + op2.Ident_);
+      code.println("store i1 " + op2.Ident_ + ", " + memPtr.TypeAndIdent());
       code.println("br label %"+labEnd);
 
-      // False
-      code.println(labFalse + ": " + r.Ident_ + "= and i1 false, false");
-      code.println("br label %" + labEnd);
-
+      // End
+      Reg r = new Reg("i1");
       code.print(labEnd + ": ");
+      code.println(r.Ident_ + " = load i1, " + memPtr.TypeAndIdent());
       return r;
     }
     public Reg visit(javalette.Absyn.EOr p, java.lang.Void arg)
     { /* Code for EOr goes here */
       Reg op1 = p.expr_1.accept(new ExprVisitor(), null);
-      Reg r = new Reg("i1");
-      String labTrue = getNewLabel();
       String labFalse = getNewLabel();
       String labEnd = getNewLabel();
-      code.println("br i1 " + op1.Ident_ + ", label %" + labTrue + ", label %" + labFalse);
-
-      // True
-      code.print(labFalse + ": ");
-      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
-      code.println(r.Ident_ + " = or i1 true, " + op2.Ident_);
-      code.println("br label %"+labEnd);
+      Reg memPtr = new Reg("i1*");
+      code.println(memPtr.Ident_ + " = alloca i1");
+      code.println("store i1 true, " + memPtr.TypeAndIdent());
+      code.println("br i1 " + op1.Ident_ + ", label %" + labEnd + ", label %" + labFalse);
 
       // False
-      code.println(labTrue + ": " + r.Ident_ + " = and i1 true, true");
-      code.println("br label %" + labEnd);
+      code.print(labFalse + ": ");
+      Reg op2 = p.expr_2.accept(new ExprVisitor(), null);
+      code.println("store i1 " + op2.Ident_ + ", " + memPtr.TypeAndIdent());
+      code.println("br label %"+labEnd);
 
+      // End
+      Reg r = new Reg("i1");
       code.print(labEnd + ": ");
+      code.println(r.Ident_ + " = load i1, " + memPtr.TypeAndIdent());
       return r;
     }
   }
