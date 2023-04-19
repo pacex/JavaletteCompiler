@@ -326,6 +326,18 @@ public class CodeGenerator {
       EApp f = (EApp)p.expr_;
       LinkedList<Reg> argRegs = new LinkedList<Reg>();
 
+      if (f.ident_.equals("printString")){
+        // Exception for printString
+        EString estr = (EString)f.listexpr_.get(0);
+        Reg strConst = estr.accept(new ExprVisitor(), null);
+        Reg ptr = new Reg("i8*");
+        code.println(ptr.Ident_ + " = getelementptr " + strConst.Type_ + ", " + strConst.Type_ + "* " + strConst.Ident_ + ", i32 0, i32 0");
+        code.println("call void @printString(" + ptr.TypeAndIdent() + ")");
+        return null;
+      }
+
+      // Any other function
+
       // Get all arguments' registers
       for(Expr e : f.listexpr_){
         argRegs.add(e.accept(new ExprVisitor(), null));
@@ -438,7 +450,7 @@ public class CodeGenerator {
     }
     public Reg visit(javalette.Absyn.EString p, java.lang.Void arg)
     { /* Code for EString goes here */
-      Reg r = new Reg("i8*", stringLiteralIdentifiers.get(p));
+      Reg r = new Reg("[" + Integer.valueOf(p.string_.length() + 1) + " x i8]", stringLiteralIdentifiers.get(p));
       return r;
     }
     public Reg visit(javalette.Absyn.Neg p, java.lang.Void arg)
