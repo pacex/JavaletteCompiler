@@ -12,7 +12,6 @@ public class ComposVisitor<A> implements
   javalette.Absyn.Stmt.Visitor<javalette.Absyn.Stmt,A>,
   javalette.Absyn.Item.Visitor<javalette.Absyn.Item,A>,
   javalette.Absyn.Type.Visitor<javalette.Absyn.Type,A>,
-  javalette.Absyn.ArrayType.Visitor<javalette.Absyn.ArrayType,A>,
   javalette.Absyn.Expr.Visitor<javalette.Absyn.Expr,A>,
   javalette.Absyn.Index.Visitor<javalette.Absyn.Index,A>,
   javalette.Absyn.AddOp.Visitor<javalette.Absyn.AddOp,A>,
@@ -133,6 +132,14 @@ public class ComposVisitor<A> implements
       javalette.Absyn.Stmt stmt_ = p.stmt_.accept(this, arg);
       return new javalette.Absyn.While(expr_, stmt_);
     }
+    public javalette.Absyn.Stmt visit(javalette.Absyn.For p, A arg)
+    {
+      javalette.Absyn.Type type_ = p.type_.accept(this, arg);
+      String ident_ = p.ident_;
+      javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
+      javalette.Absyn.Stmt stmt_ = p.stmt_.accept(this, arg);
+      return new javalette.Absyn.For(type_, ident_, expr_, stmt_);
+    }
     public javalette.Absyn.Stmt visit(javalette.Absyn.SExp p, A arg)
     {
       javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
@@ -169,10 +176,10 @@ public class ComposVisitor<A> implements
     {
       return new javalette.Absyn.Void();
     }
-    public javalette.Absyn.Type visit(javalette.Absyn.Array p, A arg)
+    public javalette.Absyn.Type visit(javalette.Absyn.ArrType p, A arg)
     {
-      javalette.Absyn.ArrayType arraytype_ = p.arraytype_.accept(this, arg);
-      return new javalette.Absyn.Array(arraytype_);
+      javalette.Absyn.Type type_ = p.type_.accept(this, arg);
+      return new javalette.Absyn.ArrType(type_);
     }
     public javalette.Absyn.Type visit(javalette.Absyn.Fun p, A arg)
     {
@@ -183,13 +190,6 @@ public class ComposVisitor<A> implements
         listtype_.add(x.accept(this,arg));
       }
       return new javalette.Absyn.Fun(type_, listtype_);
-    }
-
-    /* ArrayType */
-    public javalette.Absyn.ArrayType visit(javalette.Absyn.ArrType p, A arg)
-    {
-      javalette.Absyn.Type type_ = p.type_.accept(this, arg);
-      return new javalette.Absyn.ArrType(type_);
     }
 
     /* Expr */
@@ -211,9 +211,9 @@ public class ComposVisitor<A> implements
     }
     public javalette.Absyn.Expr visit(javalette.Absyn.ELitArr p, A arg)
     {
-      javalette.Absyn.ArrayType arraytype_ = p.arraytype_.accept(this, arg);
+      javalette.Absyn.Type type_ = p.type_.accept(this, arg);
       javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
-      return new javalette.Absyn.ELitArr(arraytype_, expr_);
+      return new javalette.Absyn.ELitArr(type_, expr_);
     }
     public javalette.Absyn.Expr visit(javalette.Absyn.ELitInt p, A arg)
     {
@@ -295,9 +295,9 @@ public class ComposVisitor<A> implements
     /* Index */
     public javalette.Absyn.Index visit(javalette.Absyn.ArrInd p, A arg)
     {
-      String ident_ = p.ident_;
-      javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
-      return new javalette.Absyn.ArrInd(ident_, expr_);
+      javalette.Absyn.Expr expr_1 = p.expr_1.accept(this, arg);
+      javalette.Absyn.Expr expr_2 = p.expr_2.accept(this, arg);
+      return new javalette.Absyn.ArrInd(expr_1, expr_2);
     }
 
     /* AddOp */

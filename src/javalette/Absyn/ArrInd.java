@@ -3,9 +3,8 @@
 package javalette.Absyn;
 
 public class ArrInd  extends Index {
-  public final String ident_;
-  public final Expr expr_;
-  public ArrInd(String p1, Expr p2) { ident_ = p1; expr_ = p2; }
+  public final Expr expr_1, expr_2;
+  public ArrInd(Expr p1, Expr p2) { expr_1 = p1; expr_2 = p2; }
 
   public <R,A> R accept(javalette.Absyn.Index.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
@@ -13,13 +12,13 @@ public class ArrInd  extends Index {
     if (this == o) return true;
     if (o instanceof javalette.Absyn.ArrInd) {
       javalette.Absyn.ArrInd x = (javalette.Absyn.ArrInd)o;
-      return this.ident_.equals(x.ident_) && this.expr_.equals(x.expr_);
+      return this.expr_1.equals(x.expr_1) && this.expr_2.equals(x.expr_2);
     }
     return false;
   }
 
   public int hashCode() {
-    return 37*(this.ident_.hashCode())+this.expr_.hashCode();
+    return 37*(this.expr_1.hashCode())+this.expr_2.hashCode();
   }
 
 

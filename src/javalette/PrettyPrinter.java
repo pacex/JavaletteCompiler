@@ -230,21 +230,6 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String print(javalette.Absyn.ArrayType foo)
-  {
-    pp(foo, 0);
-    trim();
-    String temp = buf_.toString();
-    buf_.delete(0,buf_.length());
-    return temp;
-  }
-  public static String show(javalette.Absyn.ArrayType foo)
-  {
-    sh(foo);
-    String temp = buf_.toString();
-    buf_.delete(0,buf_.length());
-    return temp;
-  }
   public static String print(javalette.Absyn.ListType foo)
   {
     pp(foo, 0);
@@ -582,6 +567,20 @@ public class PrettyPrinter
        pp(_while.stmt_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof javalette.Absyn.For)
+    {
+       javalette.Absyn.For _for = (javalette.Absyn.For) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("for");
+       render("(");
+       pp(_for.type_, 0);
+       pp(_for.ident_, 0);
+       render(":");
+       pp(_for.expr_, 0);
+       render(")");
+       pp(_for.stmt_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
     else     if (foo instanceof javalette.Absyn.SExp)
     {
        javalette.Absyn.SExp _sexp = (javalette.Absyn.SExp) foo;
@@ -666,11 +665,12 @@ public class PrettyPrinter
        render("void");
        if (_i_ > 0) render(_R_PAREN);
     }
-    else     if (foo instanceof javalette.Absyn.Array)
+    else     if (foo instanceof javalette.Absyn.ArrType)
     {
-       javalette.Absyn.Array _array = (javalette.Absyn.Array) foo;
+       javalette.Absyn.ArrType _arrtype = (javalette.Absyn.ArrType) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_array.arraytype_, 0);
+       pp(_arrtype.type_, 0);
+       render("[]");
        if (_i_ > 0) render(_R_PAREN);
     }
     else     if (foo instanceof javalette.Absyn.Fun)
@@ -681,19 +681,6 @@ public class PrettyPrinter
        render("(");
        pp(_fun.listtype_, 0);
        render(")");
-       if (_i_ > 0) render(_R_PAREN);
-    }
-
-  }
-
-  private static void pp(javalette.Absyn.ArrayType foo, int _i_)
-  {
-    if (foo instanceof javalette.Absyn.ArrType)
-    {
-       javalette.Absyn.ArrType _arrtype = (javalette.Absyn.ArrType) foo;
-       if (_i_ > 0) render(_L_PAREN);
-       pp(_arrtype.type_, 0);
-       render("[]");
        if (_i_ > 0) render(_R_PAREN);
     }
 
@@ -741,7 +728,7 @@ public class PrettyPrinter
     {
        javalette.Absyn.ELength _elength = (javalette.Absyn.ELength) foo;
        if (_i_ > 6) render(_L_PAREN);
-       pp(_elength.expr_, 0);
+       pp(_elength.expr_, 6);
        render(".");
        pp(_elength.ident_, 0);
        if (_i_ > 6) render(_R_PAREN);
@@ -751,7 +738,7 @@ public class PrettyPrinter
        javalette.Absyn.ELitArr _elitarr = (javalette.Absyn.ELitArr) foo;
        if (_i_ > 6) render(_L_PAREN);
        render("new");
-       pp(_elitarr.arraytype_, 0);
+       pp(_elitarr.type_, 0);
        render("[");
        pp(_elitarr.expr_, 0);
        render("]");
@@ -894,9 +881,9 @@ public class PrettyPrinter
     {
        javalette.Absyn.ArrInd _arrind = (javalette.Absyn.ArrInd) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_arrind.ident_, 0);
+       pp(_arrind.expr_1, 6);
        render("[");
-       pp(_arrind.expr_, 0);
+       pp(_arrind.expr_2, 0);
        render("]");
        if (_i_ > 0) render(_R_PAREN);
     }
@@ -1185,6 +1172,17 @@ public class PrettyPrinter
        sh(_while.stmt_);
        render(")");
     }
+    if (foo instanceof javalette.Absyn.For)
+    {
+       javalette.Absyn.For _for = (javalette.Absyn.For) foo;
+       render("(");
+       render("For");
+       sh(_for.type_);
+       sh(_for.ident_);
+       sh(_for.expr_);
+       sh(_for.stmt_);
+       render(")");
+    }
     if (foo instanceof javalette.Absyn.SExp)
     {
        javalette.Absyn.SExp _sexp = (javalette.Absyn.SExp) foo;
@@ -1248,12 +1246,12 @@ public class PrettyPrinter
        javalette.Absyn.Void _void = (javalette.Absyn.Void) foo;
        render("Void");
     }
-    if (foo instanceof javalette.Absyn.Array)
+    if (foo instanceof javalette.Absyn.ArrType)
     {
-       javalette.Absyn.Array _array = (javalette.Absyn.Array) foo;
+       javalette.Absyn.ArrType _arrtype = (javalette.Absyn.ArrType) foo;
        render("(");
-       render("Array");
-       sh(_array.arraytype_);
+       render("ArrType");
+       sh(_arrtype.type_);
        render(")");
     }
     if (foo instanceof javalette.Absyn.Fun)
@@ -1265,18 +1263,6 @@ public class PrettyPrinter
        render("[");
        sh(_fun.listtype_);
        render("]");
-       render(")");
-    }
-  }
-
-  private static void sh(javalette.Absyn.ArrayType foo)
-  {
-    if (foo instanceof javalette.Absyn.ArrType)
-    {
-       javalette.Absyn.ArrType _arrtype = (javalette.Absyn.ArrType) foo;
-       render("(");
-       render("ArrType");
-       sh(_arrtype.type_);
        render(")");
     }
   }
@@ -1323,7 +1309,7 @@ public class PrettyPrinter
        javalette.Absyn.ELitArr _elitarr = (javalette.Absyn.ELitArr) foo;
        render("(");
        render("ELitArr");
-       sh(_elitarr.arraytype_);
+       sh(_elitarr.type_);
        sh(_elitarr.expr_);
        render(")");
     }
@@ -1455,8 +1441,8 @@ public class PrettyPrinter
        javalette.Absyn.ArrInd _arrind = (javalette.Absyn.ArrInd) foo;
        render("(");
        render("ArrInd");
-       sh(_arrind.ident_);
-       sh(_arrind.expr_);
+       sh(_arrind.expr_1);
+       sh(_arrind.expr_2);
        render(")");
     }
   }

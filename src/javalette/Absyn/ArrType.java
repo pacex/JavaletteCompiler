@@ -2,11 +2,11 @@
 
 package javalette.Absyn;
 
-public class ArrType  extends ArrayType {
+public class ArrType  extends Type {
   public final Type type_;
   public ArrType(Type p1) { type_ = p1; }
 
-  public <R,A> R accept(javalette.Absyn.ArrayType.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
+  public <R,A> R accept(javalette.Absyn.Type.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
   public boolean equals(java.lang.Object o) {
     if (this == o) return true;

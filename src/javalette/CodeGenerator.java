@@ -361,6 +361,10 @@ public class CodeGenerator {
       p.expr_.accept(new ExprVisitor(), arg);
       return null;
     }
+
+    public java.lang.Void visit(For p, Void arg) {
+      return null;
+    }
   }
   public class ItemVisitor implements javalette.Absyn.Item.Visitor<java.lang.Void,Type>
   {

@@ -225,6 +225,10 @@ public class TypeChecker
     {
       return false;
     }
+
+    public Boolean visit(For p, java.lang.Void arg) {
+      return false;
+    }
   }
   public class BlkRCVisitor implements javalette.Absyn.Blk.Visitor<Boolean,java.lang.Void>
   {
@@ -388,7 +392,11 @@ public class TypeChecker
     public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
     { /* Code for AssArray goes here */
       //p.index_.accept(new IndexVisitor(), arg);
-      p.expr_.accept(new ExprInferVisitor(), arg);
+      //p.expr_.accept(new ExprInferVisitor(), arg);
+      return null;
+    }
+
+    public java.lang.Void visit(For p, java.lang.Void arg) {
       return null;
     }
   }
@@ -490,14 +498,14 @@ public class TypeChecker
     }
     public Type visit(javalette.Absyn.ELength p, java.lang.Void arg)
     { /* Code for ELength goes here */
-      p.expr_.accept(new ExprInferVisitor(), arg);
+      //p.expr_.accept(new ExprInferVisitor(), arg);
       //p.ident_;
       return null;
     }
     public Type visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
       //p.arraytype_.accept(new ArrayTypeVisitor(), arg);
-      p.expr_.accept(new ExprInferVisitor(), arg);
+      //p.expr_.accept(new ExprInferVisitor(), arg);
       return null;
     }
 

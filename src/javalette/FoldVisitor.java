@@ -112,6 +112,13 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       r = combine(p.stmt_.accept(this, arg), r, arg);
       return r;
     }
+    public R visit(javalette.Absyn.For p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
+      r = combine(p.stmt_.accept(this, arg), r, arg);
+      return r;
+    }
     public R visit(javalette.Absyn.SExp p, A arg) {
       R r = leaf(arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
@@ -146,9 +153,9 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
-    public R visit(javalette.Absyn.Array p, A arg) {
+    public R visit(javalette.Absyn.ArrType p, A arg) {
       R r = leaf(arg);
-      r = combine(p.arraytype_.accept(this, arg), r, arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(javalette.Absyn.Fun p, A arg) {
@@ -158,13 +165,6 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       {
         r = combine(x.accept(this, arg), r, arg);
       }
-      return r;
-    }
-
-/* ArrayType */
-    public R visit(javalette.Absyn.ArrType p, A arg) {
-      R r = leaf(arg);
-      r = combine(p.type_.accept(this, arg), r, arg);
       return r;
     }
 
@@ -185,7 +185,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
     public R visit(javalette.Absyn.ELitArr p, A arg) {
       R r = leaf(arg);
-      r = combine(p.arraytype_.accept(this, arg), r, arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
@@ -264,7 +264,8 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
 /* Index */
     public R visit(javalette.Absyn.ArrInd p, A arg) {
       R r = leaf(arg);
-      r = combine(p.expr_.accept(this, arg), r, arg);
+      r = combine(p.expr_1.accept(this, arg), r, arg);
+      r = combine(p.expr_2.accept(this, arg), r, arg);
       return r;
     }
 

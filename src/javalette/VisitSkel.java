@@ -123,6 +123,14 @@ public class VisitSkel
       p.stmt_.accept(new StmtVisitor<R,A>(), arg);
       return null;
     }
+    public R visit(javalette.Absyn.For p, A arg)
+    { /* Code for For goes here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.ident_;
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      p.stmt_.accept(new StmtVisitor<R,A>(), arg);
+      return null;
+    }
     public R visit(javalette.Absyn.SExp p, A arg)
     { /* Code for SExp goes here */
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
@@ -161,9 +169,9 @@ public class VisitSkel
     { /* Code for Void goes here */
       return null;
     }
-    public R visit(javalette.Absyn.Array p, A arg)
-    { /* Code for Array goes here */
-      p.arraytype_.accept(new ArrayTypeVisitor<R,A>(), arg);
+    public R visit(javalette.Absyn.ArrType p, A arg)
+    { /* Code for ArrType goes here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
       return null;
     }
     public R visit(javalette.Absyn.Fun p, A arg)
@@ -172,14 +180,6 @@ public class VisitSkel
       for (javalette.Absyn.Type x: p.listtype_) {
         x.accept(new TypeVisitor<R,A>(), arg);
       }
-      return null;
-    }
-  }
-  public class ArrayTypeVisitor<R,A> implements javalette.Absyn.ArrayType.Visitor<R,A>
-  {
-    public R visit(javalette.Absyn.ArrType p, A arg)
-    { /* Code for ArrType goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
       return null;
     }
   }
@@ -203,7 +203,7 @@ public class VisitSkel
     }
     public R visit(javalette.Absyn.ELitArr p, A arg)
     { /* Code for ELitArr goes here */
-      p.arraytype_.accept(new ArrayTypeVisitor<R,A>(), arg);
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
@@ -286,8 +286,8 @@ public class VisitSkel
   {
     public R visit(javalette.Absyn.ArrInd p, A arg)
     { /* Code for ArrInd goes here */
-      //p.ident_;
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      p.expr_1.accept(new ExprVisitor<R,A>(), arg);
+      p.expr_2.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
   }
