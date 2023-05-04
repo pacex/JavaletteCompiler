@@ -110,7 +110,7 @@ separator  Expr "," ;
 
 -- arrays --------------------------------------------------
 
-Index.     Index ::= Ident "[" Expr "]" ;
+ArrInd.     Index ::= Ident "[" Expr "]" ;
 
 -- operators -----------------------------------------------
 
