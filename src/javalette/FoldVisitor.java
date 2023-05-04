@@ -70,6 +70,12 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
+    public R visit(javalette.Absyn.AssArray p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.index_.accept(this, arg), r, arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
+      return r;
+    }
     public R visit(javalette.Absyn.Incr p, A arg) {
       R r = leaf(arg);
       return r;
@@ -140,6 +146,11 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
+    public R visit(javalette.Absyn.Array p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.arraytype_.accept(this, arg), r, arg);
+      return r;
+    }
     public R visit(javalette.Absyn.Fun p, A arg) {
       R r = leaf(arg);
       r = combine(p.type_.accept(this, arg), r, arg);
@@ -150,9 +161,32 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       return r;
     }
 
+/* ArrayType */
+    public R visit(javalette.Absyn.ArrType p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      return r;
+    }
+
 /* Expr */
     public R visit(javalette.Absyn.EVar p, A arg) {
       R r = leaf(arg);
+      return r;
+    }
+    public R visit(javalette.Absyn.EIndex p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.index_.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(javalette.Absyn.ELength p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(javalette.Absyn.ELitArr p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.arraytype_.accept(this, arg), r, arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(javalette.Absyn.ELitInt p, A arg) {
@@ -224,6 +258,13 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
+      return r;
+    }
+
+/* Index */
+    public R visit(javalette.Absyn.ArrInd p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
 

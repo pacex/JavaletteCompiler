@@ -12,7 +12,9 @@ public interface AllVisitor<R,A> extends
   javalette.Absyn.Stmt.Visitor<R,A>,
   javalette.Absyn.Item.Visitor<R,A>,
   javalette.Absyn.Type.Visitor<R,A>,
+  javalette.Absyn.ArrayType.Visitor<R,A>,
   javalette.Absyn.Expr.Visitor<R,A>,
+  javalette.Absyn.Index.Visitor<R,A>,
   javalette.Absyn.AddOp.Visitor<R,A>,
   javalette.Absyn.MulOp.Visitor<R,A>,
   javalette.Absyn.RelOp.Visitor<R,A>

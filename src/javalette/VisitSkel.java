@@ -79,6 +79,12 @@ public class VisitSkel
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
+    public R visit(javalette.Absyn.AssArray p, A arg)
+    { /* Code for AssArray goes here */
+      p.index_.accept(new IndexVisitor<R,A>(), arg);
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      return null;
+    }
     public R visit(javalette.Absyn.Incr p, A arg)
     { /* Code for Incr goes here */
       //p.ident_;
@@ -155,6 +161,11 @@ public class VisitSkel
     { /* Code for Void goes here */
       return null;
     }
+    public R visit(javalette.Absyn.Array p, A arg)
+    { /* Code for Array goes here */
+      p.arraytype_.accept(new ArrayTypeVisitor<R,A>(), arg);
+      return null;
+    }
     public R visit(javalette.Absyn.Fun p, A arg)
     { /* Code for Fun goes here */
       p.type_.accept(new TypeVisitor<R,A>(), arg);
@@ -164,11 +175,36 @@ public class VisitSkel
       return null;
     }
   }
+  public class ArrayTypeVisitor<R,A> implements javalette.Absyn.ArrayType.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.ArrType p, A arg)
+    { /* Code for ArrType goes here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }
+  }
   public class ExprVisitor<R,A> implements javalette.Absyn.Expr.Visitor<R,A>
   {
     public R visit(javalette.Absyn.EVar p, A arg)
     { /* Code for EVar goes here */
       //p.ident_;
+      return null;
+    }
+    public R visit(javalette.Absyn.EIndex p, A arg)
+    { /* Code for EIndex goes here */
+      p.index_.accept(new IndexVisitor<R,A>(), arg);
+      return null;
+    }
+    public R visit(javalette.Absyn.ELength p, A arg)
+    { /* Code for ELength goes here */
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      //p.ident_;
+      return null;
+    }
+    public R visit(javalette.Absyn.ELitArr p, A arg)
+    { /* Code for ELitArr goes here */
+      p.arraytype_.accept(new ArrayTypeVisitor<R,A>(), arg);
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
     public R visit(javalette.Absyn.ELitInt p, A arg)
@@ -243,6 +279,15 @@ public class VisitSkel
     { /* Code for EOr goes here */
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
       p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      return null;
+    }
+  }
+  public class IndexVisitor<R,A> implements javalette.Absyn.Index.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.ArrInd p, A arg)
+    { /* Code for ArrInd goes here */
+      //p.ident_;
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
   }

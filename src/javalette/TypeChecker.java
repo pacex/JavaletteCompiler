@@ -221,6 +221,10 @@ public class TypeChecker
     { /* Code for SExp goes here */
       return false;
     }
+    public Boolean visit(AssArray p, java.lang.Void arg) 
+    {
+      return false;
+    }
   }
   public class BlkRCVisitor implements javalette.Absyn.Blk.Visitor<Boolean,java.lang.Void>
   {
@@ -380,6 +384,13 @@ public class TypeChecker
       if (!p.expr_.accept(new ExprInferVisitor(), null).equals(new Void())) abort("Expression does not match expected type!");
       return null;
     }
+
+    public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
+    { /* Code for AssArray goes here */
+      //p.index_.accept(new IndexVisitor(), arg);
+      p.expr_.accept(new ExprInferVisitor(), arg);
+      return null;
+    }
   }
   public class ItemVisitor implements javalette.Absyn.Item.Visitor<java.lang.Void,Type>
   {
@@ -396,33 +407,7 @@ public class TypeChecker
       return null;
     }
   }
-  public class TypeVisitor<R,A> implements javalette.Absyn.Type.Visitor<R,A>
-  {
-    public R visit(javalette.Absyn.Int p, A arg)
-    { /* Code for Int goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Doub p, A arg)
-    { /* Code for Doub goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Bool p, A arg)
-    { /* Code for Bool goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Void p, A arg)
-    { /* Code for Void goes here */
-      return null;
-    }
-    public R visit(javalette.Absyn.Fun p, A arg)
-    { /* Code for Fun goes here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
-      for (javalette.Absyn.Type x: p.listtype_) {
-        x.accept(new TypeVisitor<R,A>(), arg);
-      }
-      return null;
-    }
-  } 
+  
   public class AddOpVisitor implements javalette.Absyn.AddOp.Visitor<Type,Type>
   {
     public Type visit(javalette.Absyn.Plus p, Type operand)
@@ -497,6 +482,25 @@ public class TypeChecker
       expressions.put(p, varType);
       return varType;
     }
+
+    public Type visit(javalette.Absyn.EIndex p, java.lang.Void arg)
+    { /* Code for EIndex goes here */
+      //p.index_.accept(new IndexVisitor<R,A>(), arg);
+      return null;
+    }
+    public Type visit(javalette.Absyn.ELength p, java.lang.Void arg)
+    { /* Code for ELength goes here */
+      p.expr_.accept(new ExprInferVisitor(), arg);
+      //p.ident_;
+      return null;
+    }
+    public Type visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
+    { /* Code for ELitArr goes here */
+      //p.arraytype_.accept(new ArrayTypeVisitor(), arg);
+      p.expr_.accept(new ExprInferVisitor(), arg);
+      return null;
+    }
+
     public Type visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
       Type t = new Int();
@@ -611,6 +615,16 @@ public class TypeChecker
       return ret;
     }
     //endregion
+  }
+
+  public class IndexVisitor<R,A> implements javalette.Absyn.Index.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.ArrInd p, A arg)
+    { /* Code for ArrInd goes here */
+      //p.ident_;
+      //p.expr_.accept(new ExprInferVisitor(), arg);
+      return null;
+    }
   }
   
 }

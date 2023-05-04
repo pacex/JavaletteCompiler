@@ -1,6 +1,7 @@
 package javalette;
 
 import java.io.*;
+import java.lang.Void;
 import java.util.*;
 
 import javalette.Absyn.*;
@@ -353,6 +354,13 @@ public class CodeGenerator {
 
       return null;
     }
+
+    public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
+    { /* Code for AssArray goes here */
+      //p.index_.accept(new IndexVisitor(), arg);
+      p.expr_.accept(new ExprVisitor(), arg);
+      return null;
+    }
   }
   public class ItemVisitor implements javalette.Absyn.Item.Visitor<java.lang.Void,Type>
   {
@@ -398,6 +406,25 @@ public class CodeGenerator {
       code.println(r.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
       return r;
     }
+
+    public Reg visit(javalette.Absyn.EIndex p, java.lang.Void arg)
+    { /* Code for EIndex goes here */
+      //p.index_.accept(new IndexVisitor<R,A>(), arg);
+      return null;
+    }
+    public Reg visit(javalette.Absyn.ELength p, java.lang.Void arg)
+    { /* Code for ELength goes here */
+      p.expr_.accept(new ExprVisitor(), arg);
+      //p.ident_;
+      return null;
+    }
+    public Reg visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
+    { /* Code for ELitArr goes here */
+      //p.arraytype_.accept(new ArrayTypeVisitor(), arg);
+      p.expr_.accept(new ExprVisitor(), arg);
+      return null;
+    }
+
     public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
       //p.integer_;
@@ -557,6 +584,17 @@ public class CodeGenerator {
       return r;
     }
   }
+
+  public class IndexVisitor<R,A> implements javalette.Absyn.Index.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.ArrInd p, A arg)
+    { /* Code for ArrInd goes here */
+      //p.ident_;
+      //p.expr_.accept(new ExprVisitor(), arg);
+      return null;
+    }
+  }
+
   public class AddOpVisitor implements javalette.Absyn.AddOp.Visitor<String,java.lang.Void>
   {
     public String visit(javalette.Absyn.Plus p, java.lang.Void arg)
