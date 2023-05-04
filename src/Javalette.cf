@@ -32,6 +32,8 @@ separator nonempty Item "," ;
 
 Ass.       Stmt ::= Ident "=" Expr  ";" ;
 
+AssArray.  Stmt ::= Index "=" Expr ";" ;
+
 Incr.      Stmt ::= Ident "++"  ";" ;
 
 Decr.      Stmt ::= Ident "--"  ";" ;
@@ -58,6 +60,10 @@ Bool.      Type ::= "boolean" ;
 
 Void.      Type ::= "void" ;
 
+Array.     Type ::= ArrayType ;
+
+ArrType.   ArrayType ::= Type "[]" ;
+
 internal   Fun. Type ::= Type "(" [Type] ")" ;
 
 separator  Type "," ;
@@ -65,6 +71,12 @@ separator  Type "," ;
 -- Expressions ---------------------------------------------
 
 EVar.      Expr6 ::= Ident ;
+
+EIndex.    Expr6 ::= Index ;
+
+ELength.   Expr6 ::= Expr "." Ident ;
+
+ELitArr.   Expr6 ::= "new" ArrayType "[" Expr "]" ;
 
 ELitInt.   Expr6 ::= Integer ;
 
@@ -95,6 +107,10 @@ EOr.       Expr ::= Expr1 "||" Expr ;
 coercions  Expr 6 ;
 
 separator  Expr "," ;
+
+-- arrays --------------------------------------------------
+
+Index.     Index ::= Ident "[" Expr "]" ;
 
 -- operators -----------------------------------------------
 
