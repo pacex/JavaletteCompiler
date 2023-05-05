@@ -391,12 +391,23 @@ public class TypeChecker
 
     public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
     { /* Code for AssArray goes here */
-      //p.index_.accept(new IndexVisitor(), arg);
-      //p.expr_.accept(new ExprInferVisitor(), arg);
+      Type t = p.index_.accept(new IndexVisitor(), arg);
+      if (!(p.expr_.accept(new ExprInferVisitor(), arg).equals(t))) abort("Expression does not match expected type!");
       return null;
     }
 
     public java.lang.Void visit(For p, java.lang.Void arg) {
+      Type at = p.expr_.accept(new ExprInferVisitor(), null);
+      if (!(at instanceof ArrType)) abort("Only arrays can be iterated over!");
+      ArrType arrType = (ArrType)at;
+      Type elementType = arrType.type_;
+
+      if (!p.type_.equals(elementType)) abort("Running variable must be of same type as array elements!");
+
+      createStackFrame();
+      checkAndAddVarToStackFrame(p.ident_, p.type_);
+      p.stmt_.accept(new StmtVisitor(), null);
+      removeTopStackFrame();
       return null;
     }
   }
@@ -493,20 +504,24 @@ public class TypeChecker
 
     public Type visit(javalette.Absyn.EIndex p, java.lang.Void arg)
     { /* Code for EIndex goes here */
-      //p.index_.accept(new IndexVisitor<R,A>(), arg);
-      return null;
+      Type t = p.index_.accept(new IndexVisitor(), arg);
+      expressions.put(p, t);
+      return t;
     }
     public Type visit(javalette.Absyn.ELength p, java.lang.Void arg)
     { /* Code for ELength goes here */
-      //p.expr_.accept(new ExprInferVisitor(), arg);
-      //p.ident_;
-      return null;
+      if (!p.ident_.equals("length")) abort("Unknown property: \"" + p.ident_ + "\"");
+      if (!(p.expr_.accept(new ExprInferVisitor(), arg) instanceof ArrType)) abort("Length operator can only be used with arrays!");
+      Type t = new Int();
+      expressions.put(p, t);
+      return t;
     }
     public Type visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
-      //p.arraytype_.accept(new ArrayTypeVisitor(), arg);
-      //p.expr_.accept(new ExprInferVisitor(), arg);
-      return null;
+      if (!(p.expr_.accept(new ExprInferVisitor(), arg) instanceof Int)) abort("Array length must be of type Int!");
+      Type arrType = new ArrType(p.type_);
+      expressions.put(p, arrType);
+      return arrType;
     }
 
     public Type visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
@@ -625,13 +640,15 @@ public class TypeChecker
     //endregion
   }
 
-  public class IndexVisitor<R,A> implements javalette.Absyn.Index.Visitor<R,A>
+  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Type,java.lang.Void>
   {
-    public R visit(javalette.Absyn.ArrInd p, A arg)
+    public Type visit(javalette.Absyn.ArrInd p, java.lang.Void arg)
     { /* Code for ArrInd goes here */
-      //p.ident_;
-      //p.expr_.accept(new ExprInferVisitor(), arg);
-      return null;
+      Type at = p.expr_1.accept(new ExprInferVisitor(), null);
+      if (!(at instanceof ArrType)) abort("Index operator only allowed on arrays!");
+      if (!(p.expr_2.accept(new ExprInferVisitor(), null) instanceof Int)) abort("Index must be of type Int!");
+      ArrType arrType = (ArrType)at;
+      return arrType.type_;
     }
   }
   
