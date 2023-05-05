@@ -53,6 +53,7 @@ nonterminal javalette.Absyn.Expr Expr2;
 nonterminal javalette.Absyn.Expr Expr1;
 nonterminal javalette.Absyn.Expr Expr;
 nonterminal javalette.Absyn.ListExpr ListExpr;
+nonterminal javalette.Absyn.Lhs Lhs;
 nonterminal javalette.Absyn.Index Index;
 nonterminal javalette.Absyn.AddOp AddOp;
 nonterminal javalette.Absyn.MulOp MulOp;
@@ -131,10 +132,9 @@ ListStmt ::=  /* empty */  {: RESULT = new javalette.Absyn.ListStmt(); :}
 Stmt ::= _SYMB_5:p_1  {: RESULT = new javalette.Absyn.Empty(); :}
   | Blk:p_1  {: RESULT = new javalette.Absyn.BStmt(p_1); :}
   | Type:p_1 ListItem:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Decl(p_1,p_2); :}
-  | _IDENT_:p_1 _SYMB_6:p_2 Expr:p_3 _SYMB_5:p_4  {: RESULT = new javalette.Absyn.Ass(p_1,p_3); :}
-  | Index:p_1 _SYMB_6:p_2 Expr:p_3 _SYMB_5:p_4  {: RESULT = new javalette.Absyn.AssArray(p_1,p_3); :}
-  | _IDENT_:p_1 _SYMB_7:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Incr(p_1); :}
-  | _IDENT_:p_1 _SYMB_8:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Decr(p_1); :}
+  | Lhs:p_1 _SYMB_6:p_2 Expr:p_3 _SYMB_5:p_4  {: RESULT = new javalette.Absyn.Ass(p_1,p_3); :}
+  | Lhs:p_1 _SYMB_7:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Incr(p_1); :}
+  | Lhs:p_1 _SYMB_8:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Decr(p_1); :}
   | _SYMB_36:p_1 Expr:p_2 _SYMB_5:p_3  {: RESULT = new javalette.Absyn.Ret(p_2); :}
   | _SYMB_36:p_1 _SYMB_5:p_2  {: RESULT = new javalette.Absyn.VRet(); :}
   | _SYMB_33:p_1 _SYMB_0:p_2 Expr:p_3 _SYMB_1:p_4 Stmt:p_5  {: RESULT = new javalette.Absyn.Cond(p_3,p_5); :}
@@ -193,6 +193,9 @@ Expr ::= Expr1:p_1 _SYMB_17:p_2 Expr:p_3  {: RESULT = new javalette.Absyn.EOr(p_
 ListExpr ::=  /* empty */  {: RESULT = new javalette.Absyn.ListExpr(); :}
   | Expr:p_1  {: RESULT = new javalette.Absyn.ListExpr(); RESULT.addLast(p_1); :}
   | Expr:p_1 _SYMB_2:p_2 ListExpr:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
+;
+Lhs ::= _IDENT_:p_1  {: RESULT = new javalette.Absyn.LhsVar(p_1); :}
+  | Index:p_1  {: RESULT = new javalette.Absyn.LhsArray(p_1); :}
 ;
 Index ::= Expr6:p_1 _SYMB_12:p_2 Expr:p_3 _SYMB_13:p_4  {: RESULT = new javalette.Absyn.ArrInd(p_1,p_3); :}
 ;

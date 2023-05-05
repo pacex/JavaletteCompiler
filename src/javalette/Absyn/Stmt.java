@@ -9,7 +9,6 @@ public abstract class Stmt implements java.io.Serializable {
     public R visit(javalette.Absyn.BStmt p, A arg);
     public R visit(javalette.Absyn.Decl p, A arg);
     public R visit(javalette.Absyn.Ass p, A arg);
-    public R visit(javalette.Absyn.AssArray p, A arg);
     public R visit(javalette.Absyn.Incr p, A arg);
     public R visit(javalette.Absyn.Decr p, A arg);
     public R visit(javalette.Absyn.Ret p, A arg);

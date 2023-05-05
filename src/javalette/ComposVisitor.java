@@ -13,6 +13,7 @@ public class ComposVisitor<A> implements
   javalette.Absyn.Item.Visitor<javalette.Absyn.Item,A>,
   javalette.Absyn.Type.Visitor<javalette.Absyn.Type,A>,
   javalette.Absyn.Expr.Visitor<javalette.Absyn.Expr,A>,
+  javalette.Absyn.Lhs.Visitor<javalette.Absyn.Lhs,A>,
   javalette.Absyn.Index.Visitor<javalette.Absyn.Index,A>,
   javalette.Absyn.AddOp.Visitor<javalette.Absyn.AddOp,A>,
   javalette.Absyn.MulOp.Visitor<javalette.Absyn.MulOp,A>,
@@ -84,25 +85,19 @@ public class ComposVisitor<A> implements
     }
     public javalette.Absyn.Stmt visit(javalette.Absyn.Ass p, A arg)
     {
-      String ident_ = p.ident_;
+      javalette.Absyn.Lhs lhs_ = p.lhs_.accept(this, arg);
       javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
-      return new javalette.Absyn.Ass(ident_, expr_);
-    }
-    public javalette.Absyn.Stmt visit(javalette.Absyn.AssArray p, A arg)
-    {
-      javalette.Absyn.Index index_ = p.index_.accept(this, arg);
-      javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
-      return new javalette.Absyn.AssArray(index_, expr_);
+      return new javalette.Absyn.Ass(lhs_, expr_);
     }
     public javalette.Absyn.Stmt visit(javalette.Absyn.Incr p, A arg)
     {
-      String ident_ = p.ident_;
-      return new javalette.Absyn.Incr(ident_);
+      javalette.Absyn.Lhs lhs_ = p.lhs_.accept(this, arg);
+      return new javalette.Absyn.Incr(lhs_);
     }
     public javalette.Absyn.Stmt visit(javalette.Absyn.Decr p, A arg)
     {
-      String ident_ = p.ident_;
-      return new javalette.Absyn.Decr(ident_);
+      javalette.Absyn.Lhs lhs_ = p.lhs_.accept(this, arg);
+      return new javalette.Absyn.Decr(lhs_);
     }
     public javalette.Absyn.Stmt visit(javalette.Absyn.Ret p, A arg)
     {
@@ -290,6 +285,18 @@ public class ComposVisitor<A> implements
       javalette.Absyn.Expr expr_1 = p.expr_1.accept(this, arg);
       javalette.Absyn.Expr expr_2 = p.expr_2.accept(this, arg);
       return new javalette.Absyn.EOr(expr_1, expr_2);
+    }
+
+    /* Lhs */
+    public javalette.Absyn.Lhs visit(javalette.Absyn.LhsVar p, A arg)
+    {
+      String ident_ = p.ident_;
+      return new javalette.Absyn.LhsVar(ident_);
+    }
+    public javalette.Absyn.Lhs visit(javalette.Absyn.LhsArray p, A arg)
+    {
+      javalette.Absyn.Index index_ = p.index_.accept(this, arg);
+      return new javalette.Absyn.LhsArray(index_);
     }
 
     /* Index */

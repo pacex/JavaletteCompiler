@@ -75,24 +75,18 @@ public class VisitSkel
     }
     public R visit(javalette.Absyn.Ass p, A arg)
     { /* Code for Ass goes here */
-      //p.ident_;
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
-      return null;
-    }
-    public R visit(javalette.Absyn.AssArray p, A arg)
-    { /* Code for AssArray goes here */
-      p.index_.accept(new IndexVisitor<R,A>(), arg);
+      p.lhs_.accept(new LhsVisitor<R,A>(), arg);
       p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
     public R visit(javalette.Absyn.Incr p, A arg)
     { /* Code for Incr goes here */
-      //p.ident_;
+      p.lhs_.accept(new LhsVisitor<R,A>(), arg);
       return null;
     }
     public R visit(javalette.Absyn.Decr p, A arg)
     { /* Code for Decr goes here */
-      //p.ident_;
+      p.lhs_.accept(new LhsVisitor<R,A>(), arg);
       return null;
     }
     public R visit(javalette.Absyn.Ret p, A arg)
@@ -279,6 +273,19 @@ public class VisitSkel
     { /* Code for EOr goes here */
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
       p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      return null;
+    }
+  }
+  public class LhsVisitor<R,A> implements javalette.Absyn.Lhs.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.LhsVar p, A arg)
+    { /* Code for LhsVar goes here */
+      //p.ident_;
+      return null;
+    }
+    public R visit(javalette.Absyn.LhsArray p, A arg)
+    { /* Code for LhsArray goes here */
+      p.index_.accept(new IndexVisitor<R,A>(), arg);
       return null;
     }
   }

@@ -30,7 +30,6 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(javalette.Absyn.BStmt p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.Decl p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.Ass p, A arg) { return visitDefault(p, arg); }
-    public R visit(javalette.Absyn.AssArray p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.Incr p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.Decr p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.Ret p, A arg) { return visitDefault(p, arg); }
@@ -78,6 +77,12 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(javalette.Absyn.EAnd p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.EOr p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(javalette.Absyn.Expr p, A arg) {
+      throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
+    }
+    /* Lhs */
+    public R visit(javalette.Absyn.LhsVar p, A arg) { return visitDefault(p, arg); }
+    public R visit(javalette.Absyn.LhsArray p, A arg) { return visitDefault(p, arg); }
+    public R visitDefault(javalette.Absyn.Lhs p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
     /* Index */

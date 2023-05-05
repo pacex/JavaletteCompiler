@@ -30,13 +30,11 @@ Init.      Item ::= Ident "=" Expr ;
 
 separator nonempty Item "," ;
 
-Ass.       Stmt ::= Ident "=" Expr  ";" ;
+Ass.       Stmt ::= Lhs "=" Expr  ";" ;
 
-AssArray.  Stmt ::= Index "=" Expr ";" ;
+Incr.      Stmt ::= Lhs "++"  ";" ;
 
-Incr.      Stmt ::= Ident "++"  ";" ;
-
-Decr.      Stmt ::= Ident "--"  ";" ;
+Decr.      Stmt ::= Lhs "--"  ";" ;
 
 Ret.       Stmt ::= "return" Expr ";" ;
 
@@ -109,6 +107,10 @@ coercions  Expr 6 ;
 separator  Expr "," ;
 
 -- arrays --------------------------------------------------
+
+LhsVar.    Lhs ::= Ident ;
+
+LhsArray.  Lhs ::= Index ;
 
 ArrInd.    Index ::= Expr6 "[" Expr "]" ;
 

@@ -67,21 +67,18 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
     public R visit(javalette.Absyn.Ass p, A arg) {
       R r = leaf(arg);
-      r = combine(p.expr_.accept(this, arg), r, arg);
-      return r;
-    }
-    public R visit(javalette.Absyn.AssArray p, A arg) {
-      R r = leaf(arg);
-      r = combine(p.index_.accept(this, arg), r, arg);
+      r = combine(p.lhs_.accept(this, arg), r, arg);
       r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(javalette.Absyn.Incr p, A arg) {
       R r = leaf(arg);
+      r = combine(p.lhs_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(javalette.Absyn.Decr p, A arg) {
       R r = leaf(arg);
+      r = combine(p.lhs_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(javalette.Absyn.Ret p, A arg) {
@@ -258,6 +255,17 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
+      return r;
+    }
+
+/* Lhs */
+    public R visit(javalette.Absyn.LhsVar p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
+    public R visit(javalette.Absyn.LhsArray p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.index_.accept(this, arg), r, arg);
       return r;
     }
 

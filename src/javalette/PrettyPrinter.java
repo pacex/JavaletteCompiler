@@ -275,6 +275,21 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
+  public static String print(javalette.Absyn.Lhs foo)
+  {
+    pp(foo, 0);
+    trim();
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String show(javalette.Absyn.Lhs foo)
+  {
+    sh(foo);
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
   public static String print(javalette.Absyn.Index foo)
   {
     pp(foo, 0);
@@ -481,19 +496,9 @@ public class PrettyPrinter
     {
        javalette.Absyn.Ass _ass = (javalette.Absyn.Ass) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_ass.ident_, 0);
+       pp(_ass.lhs_, 0);
        render("=");
        pp(_ass.expr_, 0);
-       render(";");
-       if (_i_ > 0) render(_R_PAREN);
-    }
-    else     if (foo instanceof javalette.Absyn.AssArray)
-    {
-       javalette.Absyn.AssArray _assarray = (javalette.Absyn.AssArray) foo;
-       if (_i_ > 0) render(_L_PAREN);
-       pp(_assarray.index_, 0);
-       render("=");
-       pp(_assarray.expr_, 0);
        render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
@@ -501,7 +506,7 @@ public class PrettyPrinter
     {
        javalette.Absyn.Incr _incr = (javalette.Absyn.Incr) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_incr.ident_, 0);
+       pp(_incr.lhs_, 0);
        render("++");
        render(";");
        if (_i_ > 0) render(_R_PAREN);
@@ -510,7 +515,7 @@ public class PrettyPrinter
     {
        javalette.Absyn.Decr _decr = (javalette.Absyn.Decr) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_decr.ident_, 0);
+       pp(_decr.lhs_, 0);
        render("--");
        render(";");
        if (_i_ > 0) render(_R_PAREN);
@@ -875,6 +880,25 @@ public class PrettyPrinter
   }
 
 
+  private static void pp(javalette.Absyn.Lhs foo, int _i_)
+  {
+    if (foo instanceof javalette.Absyn.LhsVar)
+    {
+       javalette.Absyn.LhsVar _lhsvar = (javalette.Absyn.LhsVar) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_lhsvar.ident_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof javalette.Absyn.LhsArray)
+    {
+       javalette.Absyn.LhsArray _lhsarray = (javalette.Absyn.LhsArray) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_lhsarray.index_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+
+  }
+
   private static void pp(javalette.Absyn.Index foo, int _i_)
   {
     if (foo instanceof javalette.Absyn.ArrInd)
@@ -1102,17 +1126,8 @@ public class PrettyPrinter
        javalette.Absyn.Ass _ass = (javalette.Absyn.Ass) foo;
        render("(");
        render("Ass");
-       sh(_ass.ident_);
+       sh(_ass.lhs_);
        sh(_ass.expr_);
-       render(")");
-    }
-    if (foo instanceof javalette.Absyn.AssArray)
-    {
-       javalette.Absyn.AssArray _assarray = (javalette.Absyn.AssArray) foo;
-       render("(");
-       render("AssArray");
-       sh(_assarray.index_);
-       sh(_assarray.expr_);
        render(")");
     }
     if (foo instanceof javalette.Absyn.Incr)
@@ -1120,7 +1135,7 @@ public class PrettyPrinter
        javalette.Absyn.Incr _incr = (javalette.Absyn.Incr) foo;
        render("(");
        render("Incr");
-       sh(_incr.ident_);
+       sh(_incr.lhs_);
        render(")");
     }
     if (foo instanceof javalette.Absyn.Decr)
@@ -1128,7 +1143,7 @@ public class PrettyPrinter
        javalette.Absyn.Decr _decr = (javalette.Absyn.Decr) foo;
        render("(");
        render("Decr");
-       sh(_decr.ident_);
+       sh(_decr.lhs_);
        render(")");
     }
     if (foo instanceof javalette.Absyn.Ret)
@@ -1432,6 +1447,26 @@ public class PrettyPrinter
        if (it.hasNext())
          render(",");
      }
+  }
+
+  private static void sh(javalette.Absyn.Lhs foo)
+  {
+    if (foo instanceof javalette.Absyn.LhsVar)
+    {
+       javalette.Absyn.LhsVar _lhsvar = (javalette.Absyn.LhsVar) foo;
+       render("(");
+       render("LhsVar");
+       sh(_lhsvar.ident_);
+       render(")");
+    }
+    if (foo instanceof javalette.Absyn.LhsArray)
+    {
+       javalette.Absyn.LhsArray _lhsarray = (javalette.Absyn.LhsArray) foo;
+       render("(");
+       render("LhsArray");
+       sh(_lhsarray.index_);
+       render(")");
+    }
   }
 
   private static void sh(javalette.Absyn.Index foo)

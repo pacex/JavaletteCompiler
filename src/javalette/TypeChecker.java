@@ -221,10 +221,6 @@ public class TypeChecker
     { /* Code for SExp goes here */
       return false;
     }
-    public Boolean visit(AssArray p, java.lang.Void arg) 
-    {
-      return false;
-    }
 
     public Boolean visit(For p, java.lang.Void arg) {
       return false;
@@ -325,23 +321,19 @@ public class TypeChecker
     }
     public java.lang.Void visit(javalette.Absyn.Ass p, java.lang.Void arg)
     { /* Code for Ass goes here */
-      Type expectedType = getVarType(p.ident_);
-      if (expectedType == null) abort("Variable '" + p.ident_ + "'' is undeclared!");
-      //p.expr_.accept(new ExprVisitor(), expectedType);
+      Type expectedType = p.lhs_.accept(new LhsVisitor(), null);
       if (!p.expr_.accept(new ExprInferVisitor(), null).equals(expectedType)) abort("Expression does not match expected type!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
     { /* Code for Incr goes here */
-      Type t = getVarType(p.ident_);
-      if (t == null) abort("Variable '" + p.ident_ + "'' is undeclared!");
+      Type t = p.lhs_.accept(new LhsVisitor(), null);
       if (!(t instanceof javalette.Absyn.Int)) abort("'Increment' operation only valid for variables of type int!");
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Decr p, java.lang.Void arg)
     { /* Code for Decr goes here */
-      Type t = getVarType(p.ident_);
-      if (t == null) abort("Variable '" + p.ident_ + "'' is undeclared!");
+      Type t = p.lhs_.accept(new LhsVisitor(), null);
       if (!(t instanceof javalette.Absyn.Int)) abort("'Decrement' operation only valid for variables of type int!");
       return null;
     }
@@ -389,13 +381,6 @@ public class TypeChecker
       return null;
     }
 
-    public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
-    { /* Code for AssArray goes here */
-      Type t = p.index_.accept(new IndexVisitor(), arg);
-      if (!(p.expr_.accept(new ExprInferVisitor(), arg).equals(t))) abort("Expression does not match expected type!");
-      return null;
-    }
-
     public java.lang.Void visit(For p, java.lang.Void arg) {
       Type at = p.expr_.accept(new ExprInferVisitor(), null);
       if (!(at instanceof ArrType)) abort("Only arrays can be iterated over!");
@@ -424,6 +409,20 @@ public class TypeChecker
       if (!p.expr_.accept(new ExprInferVisitor(), null).equals(t)) abort("Expression does not match expected type!");
       checkAndAddVarToStackFrame(p.ident_, t);
       return null;
+    }
+  }
+
+  public class LhsVisitor implements javalette.Absyn.Lhs.Visitor<Type,java.lang.Void>
+  {
+    public Type visit(javalette.Absyn.LhsVar p, java.lang.Void arg)
+    { /* Code for LhsVar goes here */
+      Type t = getVarType(p.ident_);
+      if (t == null) abort("Variable '" + p.ident_ + "'' is undeclared!");
+      return t;
+    }
+    public Type visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
+    { /* Code for LhsArray goes here */
+      return p.index_.accept(new IndexVisitor(), arg);
     }
   }
   
