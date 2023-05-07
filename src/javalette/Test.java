@@ -90,7 +90,7 @@ public class Test
     tc.typeCheck();
 
     // Code Generator
-    generateLLVM = false;
+    //generateLLVM = false;
     if (generateLLVM){
       CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions(), tc.getStringLiterals());
       PrintStream code = cg.generateCode();

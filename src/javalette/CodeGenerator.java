@@ -226,13 +226,13 @@ public class CodeGenerator {
     { 
       // Get assignment expression register
       Reg rhs = p.expr_.accept(new ExprVisitor(), null);
-      Var v = getVar(p.ident_);
+      Var v = p.lhs_.accept(new LhsVisitor(), null);
       code.println("store " + rhs.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
     { /* Code for Incr goes here */
-      Var v = getVar(p.ident_);
+      Var v = p.lhs_.accept(new LhsVisitor(), null);
       Reg prior = new Reg(TypeToString(v.type_));
       code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
       Reg posterior = new Reg(TypeToString(v.type_));
@@ -242,7 +242,7 @@ public class CodeGenerator {
     }
     public java.lang.Void visit(javalette.Absyn.Decr p, java.lang.Void arg)
     { /* Code for Decr goes here */
-      Var v = getVar(p.ident_);
+      Var v = p.lhs_.accept(new LhsVisitor(), null);
       Reg prior = new Reg(TypeToString(v.type_));
       code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
       Reg posterior = new Reg(TypeToString(v.type_));
@@ -352,13 +352,6 @@ public class CodeGenerator {
       }
       code.print(")\n");
 
-      return null;
-    }
-
-    public java.lang.Void visit(javalette.Absyn.AssArray p, java.lang.Void arg)
-    { /* Code for AssArray goes here */
-      //p.index_.accept(new IndexVisitor(), arg);
-      p.expr_.accept(new ExprVisitor(), arg);
       return null;
     }
 
@@ -589,12 +582,25 @@ public class CodeGenerator {
     }
   }
 
-  public class IndexVisitor<R,A> implements javalette.Absyn.Index.Visitor<R,A>
+  public class LhsVisitor implements javalette.Absyn.Lhs.Visitor<Var,java.lang.Void>
   {
-    public R visit(javalette.Absyn.ArrInd p, A arg)
-    { /* Code for ArrInd goes here */
+    public Var visit(javalette.Absyn.LhsVar p, java.lang.Void arg)
+    { /* Code for LhsVar goes here */
       //p.ident_;
-      //p.expr_.accept(new ExprVisitor(), arg);
+      return getVar(p.ident_);
+    }
+    public Var visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
+    { /* Code for LhsArray goes here */
+      p.index_.accept(new IndexVisitor(), true);
+      return null;
+    }
+  }
+  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Reg,Boolean>
+  {
+    public Reg visit(javalette.Absyn.ArrInd p, Boolean returnPointer)
+    { /* Code for ArrInd goes here */
+      //p.expr_1.accept(new ExprVisitor(), arg);
+      //p.expr_2.accept(new ExprVisitor(), arg);
       return null;
     }
   }
