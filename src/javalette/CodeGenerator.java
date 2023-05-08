@@ -33,6 +33,9 @@ public class CodeGenerator {
     if (t instanceof Int) return "i32";
     else if (t instanceof Doub) return "double";
     else if (t instanceof Bool) return "i1";
+    else if (t instanceof ArrType) {
+      return "%array*";
+    }
     else if (t instanceof javalette.Absyn.Void) return "void";
     else return "<unknown type>";
   }
@@ -115,6 +118,10 @@ public class CodeGenerator {
       code.println("declare void @printString(i8*)");
       code.println("declare i32 @readInt()");
       code.println("declare double @readDouble()");
+
+      // Array Overhead
+      code.println("declare ptr @calloc(i32, i32)");
+      code.println("%array = type {i32, ptr}");
 
       // String literals
       int strCnt = 0;
@@ -363,20 +370,46 @@ public class CodeGenerator {
   {
     public java.lang.Void visit(javalette.Absyn.NoInit p, Type t)
     { /* Code for NoInit goes here */
-      Reg memPtr = new Reg(TypeToString(t) + "*"); // Create handle for memPtr register
+      Reg memPtr = new Reg("ptr"); // Create handle for memPtr register
       code.println(memPtr.Ident_ + " = alloca " + TypeToString(t)); // Memory allocation
       
       Var v = new Var(memPtr, t); // Add variable to stackframe
       addVarToStackFrame(p.ident_, v);
 
       // Initialize variable to 0, 0.0 or false
-      Reg e = new Reg(TypeToString(t));
-      if (t instanceof Int) code.println(e.Ident_ + " = add i32 0, 0");
-      else if (t instanceof Doub) code.println(e.Ident_ + " = fadd double 0.0, 0.0");
-      else code.println(e.Ident_ + " = add i1 false, false");
-      
-      code.println("store " + e.TypeAndIdent() + ", " + memPtr.TypeAndIdent()); // Store value from expression register
 
+      if (!(t instanceof ArrType)){
+        Reg e = new Reg(TypeToString(t));
+        if (t instanceof Int) code.println(e.Ident_ + " = add i32 0, 0");
+        else if (t instanceof Doub) code.println(e.Ident_ + " = fadd double 0.0, 0.0");
+        else if (t instanceof Bool) code.println(e.Ident_ + " = add i1 false, false");
+        
+        code.println("store " + e.TypeAndIdent() + ", " + memPtr.TypeAndIdent()); // Store value from expression register
+      }else{
+        Type elementType = t;
+        String elementTypeStr = TypeToString(elementType);
+
+        // Get element size
+        Reg elementSize = new Reg("i32");
+        Reg elementSizePtr = new Reg(elementTypeStr + "*");
+        code.println(elementSizePtr.Ident_ + " = getelementptr " + elementTypeStr + ", " + elementTypeStr + "* null, i32 1");
+        code.println(elementSize.Ident_ + " = ptrtoint " + elementTypeStr + "* " + elementSizePtr.Ident_ + " to i32");
+
+        // Allocate Memory
+        Reg arrPtr = new Reg("ptr");
+        code.println(arrPtr.Ident_ + " = alloca %array");
+        code.println("store " + arrPtr.TypeAndIdent() + ", " + memPtr.TypeAndIdent());
+        Reg arrLengthPtr = new Reg("i32*");
+        Reg arrDataHeap = new Reg("ptr");
+        Reg arrDataPtr = new Reg("ptr");
+        code.println(arrLengthPtr.Ident_ + " = getelementptr %array, %array* " + arrPtr.Ident_ + ", i32 0, i32 0");
+        code.println("store i32 0, " + arrLengthPtr.TypeAndIdent());
+
+        code.println(arrDataHeap.Ident_ + " = call ptr @calloc(i32 0, " + elementSize.TypeAndIdent() + ")");
+        code.println(arrDataPtr.Ident_ + " = getelementptr %array, %array* " + arrPtr.Ident_ + ", i32 0, i32 1");
+        code.println("store " + arrDataHeap.TypeAndIdent() + ", " + arrDataPtr.TypeAndIdent());
+      }
+      
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Init p, Type t)
@@ -407,19 +440,44 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.EIndex p, java.lang.Void arg)
     { /* Code for EIndex goes here */
       //p.index_.accept(new IndexVisitor<R,A>(), arg);
+      // TODO
       return null;
     }
     public Reg visit(javalette.Absyn.ELength p, java.lang.Void arg)
     { /* Code for ELength goes here */
-      p.expr_.accept(new ExprVisitor(), arg);
-      //p.ident_;
-      return null;
+      Reg arr = p.expr_.accept(new ExprVisitor(), arg);
+      Reg lengthPtr = new Reg("i32*");
+      code.println(lengthPtr.Ident_ + " = getelementptr %array, %array* " + arr.Ident_ + ", i32 0, i32 0");
+      Reg length = new Reg("i32");
+      code.println(length.Ident_ + " = load i32, i32* " + lengthPtr.Ident_);
+      return length;
     }
     public Reg visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
-      //p.arraytype_.accept(new ArrayTypeVisitor(), arg);
-      p.expr_.accept(new ExprVisitor(), arg);
-      return null;
+      Type elementType = p.type_;
+      String elementTypeStr = TypeToString(elementType);
+      Reg elementCount = p.expr_.accept(new ExprVisitor(), null);
+
+      // Get element size
+      Reg elementSize = new Reg("i32");
+      Reg elementSizePtr = new Reg(elementTypeStr + "*");
+      code.println(elementSizePtr.Ident_ + " = getelementptr " + elementTypeStr + ", " + elementTypeStr + "* null, i32 1");
+      code.println(elementSize.Ident_ + " = ptrtoint " + elementTypeStr + "* " + elementSizePtr.Ident_ + " to i32");
+
+      // Allocate Memory
+      Reg arrPtr = new Reg("%array*");
+      Reg arrLengthPtr = new Reg("i32*");
+      Reg arrDataHeap = new Reg("ptr");
+      Reg arrDataPtr = new Reg("ptr");
+      code.println(arrPtr.Ident_ + " = alloca %array");
+      code.println(arrLengthPtr.Ident_ + " = getelementptr %array, %array* " + arrPtr.Ident_ + ", i32 0, i32 0");
+      code.println("store " + elementCount.TypeAndIdent() + ", " + arrLengthPtr.TypeAndIdent());
+
+      code.println(arrDataHeap.Ident_ + " = call ptr @calloc(" + elementCount.TypeAndIdent() + ", " + elementSize.TypeAndIdent() + ")");
+      code.println(arrDataPtr.Ident_ + " = getelementptr %array, %array* " + arrPtr.Ident_ + ", i32 0, i32 1");
+      code.println("store " + arrDataHeap.TypeAndIdent() + ", " + arrDataPtr.TypeAndIdent());
+
+      return arrPtr;
     }
 
     public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
@@ -591,16 +649,22 @@ public class CodeGenerator {
     }
     public Var visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
     { /* Code for LhsArray goes here */
-      p.index_.accept(new IndexVisitor(), true);
+      p.index_.accept(new IndexVisitor(), null);
+      // TODO
       return null;
     }
   }
-  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Reg,Boolean>
+  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Var,java.lang.Void>
   {
-    public Reg visit(javalette.Absyn.ArrInd p, Boolean returnPointer)
+    public Var visit(javalette.Absyn.ArrInd p, java.lang.Void arg)
     { /* Code for ArrInd goes here */
-      //p.expr_1.accept(new ExprVisitor(), arg);
-      //p.expr_2.accept(new ExprVisitor(), arg);
+      // TODO
+
+      Reg arr = p.expr_1.accept(new ExprVisitor(), arg);
+      Reg index = p.expr_2.accept(new ExprVisitor(), arg);
+
+      Reg valuePtr = new Reg("ptr");
+
       return null;
     }
   }
