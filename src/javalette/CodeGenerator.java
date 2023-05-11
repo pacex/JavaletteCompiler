@@ -50,13 +50,12 @@ public class CodeGenerator {
   private Prog ast;
   private PrintStream code;
   private HashMap<String, FuncType> functions;
-  private HashMap<Expr,Type> expressions; // unused
+  private HashMap<Expr,Type> expressions;
   private LinkedList<HashMap<String,Var>> stack;
 
   private LinkedList<EString> stringLiterals;
   private HashMap<EString, String> stringLiteralIdentifiers;
 
-  private String currentFunction; // unused
   private int labelCounter;
 
   private String getNewLabel(){
@@ -97,7 +96,6 @@ public class CodeGenerator {
       this.stringLiteralIdentifiers = new HashMap<EString, String>();
       this.code = new PrintStream(System.out, false);
       this.stack = new LinkedList<HashMap<String,Var>>();
-      this.currentFunction = "";
       this.labelCounter = 0;
   }
 
@@ -143,8 +141,6 @@ public class CodeGenerator {
   {
     public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
     { 
-      currentFunction = "";
-
       // Overhead  
       code.println("declare void @printInt(i32)");
       code.println("declare void @printDouble(double)");
@@ -191,8 +187,6 @@ public class CodeGenerator {
       //p.ident_;
       createStackFrame();
       LinkedList<Arg> args = new LinkedList<Arg>();
-
-      currentFunction = p.ident_;
 
       code.print("define " + TypeToString(p.type_) + " @" + p.ident_ + "(");
 
@@ -275,28 +269,28 @@ public class CodeGenerator {
     { 
       // Get assignment expression register
       Reg rhs = p.expr_.accept(new ExprVisitor(), null);
-      Var v = p.lhs_.accept(new LhsVisitor(), null);
-      code.println("store " + rhs.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
+      Reg memPtrReg = p.lhs_.accept(new LhsVisitor(), null);
+      code.println("store " + rhs.TypeAndIdent() + ", " + memPtrReg.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Incr p, java.lang.Void arg)
     { /* Code for Incr goes here */
-      Var v = p.lhs_.accept(new LhsVisitor(), null);
-      Reg prior = new Reg(TypeToString(v.type_));
-      code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
-      Reg posterior = new Reg(TypeToString(v.type_));
+      Reg memPtrReg = p.lhs_.accept(new LhsVisitor(), null);
+      Reg prior = new Reg("i32");
+      code.println(prior.Ident_ + " = load i32, " + memPtrReg.TypeAndIdent());
+      Reg posterior = new Reg("i32");
       code.println(posterior.Ident_ + " = add " + prior.TypeAndIdent() + ", 1");
-      code.println("store " + posterior.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
+      code.println("store " + posterior.TypeAndIdent() + ", " + memPtrReg.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Decr p, java.lang.Void arg)
     { /* Code for Decr goes here */
-      Var v = p.lhs_.accept(new LhsVisitor(), null);
-      Reg prior = new Reg(TypeToString(v.type_));
-      code.println(prior.Ident_ + " = load " + TypeToString(v.type_) + ", " + v.memPtrReg_.TypeAndIdent());
-      Reg posterior = new Reg(TypeToString(v.type_));
+      Reg memPtrReg = p.lhs_.accept(new LhsVisitor(), null);
+      Reg prior = new Reg("i32");
+      code.println(prior.Ident_ + " = load i32, " + memPtrReg.TypeAndIdent());
+      Reg posterior = new Reg("i32");
       code.println(posterior.Ident_ + " = sub " + prior.TypeAndIdent() + ", 1");
-      code.println("store " + posterior.TypeAndIdent() + ", " + v.memPtrReg_.TypeAndIdent());
+      code.println("store " + posterior.TypeAndIdent() + ", " + memPtrReg.TypeAndIdent());
       return null;
     }
     public java.lang.Void visit(javalette.Absyn.Ret p, java.lang.Void arg)
@@ -464,9 +458,13 @@ public class CodeGenerator {
 
     public Reg visit(javalette.Absyn.EIndex p, java.lang.Void arg)
     { /* Code for EIndex goes here */
-      //p.index_.accept(new IndexVisitor<R,A>(), arg);
-      // TODO
-      return null;
+      Reg valuePtr = p.index_.accept(new IndexVisitor(), null);
+      Type t = expressions.get(p);
+      String tStr = TypeToString(t);
+
+      Reg value = new Reg(tStr);
+      code.println(value.Ident_ + " = load " + tStr + ", " + valuePtr.TypeAndIdent());
+      return value;
     }
     public Reg visit(javalette.Absyn.ELength p, java.lang.Void arg)
     { /* Code for ELength goes here */
@@ -649,32 +647,37 @@ public class CodeGenerator {
     }
   }
 
-  public class LhsVisitor implements javalette.Absyn.Lhs.Visitor<Var,java.lang.Void>
+  public class LhsVisitor implements javalette.Absyn.Lhs.Visitor<Reg,java.lang.Void>
   {
-    public Var visit(javalette.Absyn.LhsVar p, java.lang.Void arg)
+    public Reg visit(javalette.Absyn.LhsVar p, java.lang.Void arg)
     { /* Code for LhsVar goes here */
-      //p.ident_;
-      return getVar(p.ident_);
+      return getVar(p.ident_).memPtrReg_;
     }
-    public Var visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
+    public Reg visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
     { /* Code for LhsArray goes here */
-      //p.index_.accept(new IndexVisitor(), null);
-      // TODO
-      return null;
+      return p.index_.accept(new IndexVisitor(), null);
     }
   }
-  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Var,java.lang.Void>
+  public class IndexVisitor implements javalette.Absyn.Index.Visitor<Reg,java.lang.Void>
   {
-    public Var visit(javalette.Absyn.ArrInd p, java.lang.Void arg)
+    public Reg visit(javalette.Absyn.ArrInd p, java.lang.Void arg)
     { /* Code for ArrInd goes here */
-      // TODO
 
-      Reg arr = p.expr_1.accept(new ExprVisitor(), arg);
+      Reg arrPtr = p.expr_1.accept(new ExprVisitor(), arg);
+      ArrType arrType = (ArrType)expressions.get(p.expr_1);
+      String arrTypeStr = TypeToString(arrType, false);
       Reg index = p.expr_2.accept(new ExprVisitor(), arg);
 
-      Reg valuePtr = new Reg("ptr");
+      Reg dataPtrPtr = new Reg("ptr");
+      code.println(dataPtrPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 1");
+      Reg dataPtr = new Reg("ptr");
+      code.println(dataPtr.Ident_ + " = load ptr, " + dataPtrPtr.TypeAndIdent());
 
-      return null;
+      String dataTypeStr = "[0 x " + TypeToString(arrType.type_) + "]";
+      Reg valuePtr = new Reg("ptr");
+      code.println(valuePtr.Ident_ + " = getelementptr " + dataTypeStr + ", " + dataPtr.TypeAndIdent() + ", i32 0, " + index.TypeAndIdent());
+
+      return valuePtr;
     }
   }
 
