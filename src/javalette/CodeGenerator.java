@@ -137,6 +137,21 @@ public class CodeGenerator {
     return arrPtr;
   }
 
+  private Reg indexArray(Reg arrPtr, Reg index, ArrType arrType){
+    String arrTypeStr = TypeToString(arrType, false);
+
+    Reg dataPtrPtr = new Reg("ptr");
+    code.println(dataPtrPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 1");
+    Reg dataPtr = new Reg("ptr");
+    code.println(dataPtr.Ident_ + " = load ptr, " + dataPtrPtr.TypeAndIdent());
+
+    String dataTypeStr = "[0 x " + TypeToString(arrType.type_) + "]";
+    Reg valuePtr = new Reg("ptr");
+    code.println(valuePtr.Ident_ + " = getelementptr " + dataTypeStr + ", " + dataPtr.TypeAndIdent() + ", i32 0, " + index.TypeAndIdent());
+
+    return valuePtr;
+  }
+
   public class ProgVisitor implements javalette.Absyn.Prog.Visitor<java.lang.Void,java.lang.Void>
   {
     public java.lang.Void visit(javalette.Absyn.Program p, java.lang.Void arg)
@@ -399,6 +414,68 @@ public class CodeGenerator {
     }
 
     public java.lang.Void visit(For p, Void arg) {
+      // TODO
+
+      // Labels
+      String labCond = getNewLabel();
+      String labLoop = getNewLabel();
+      String labEnd = getNewLabel();
+
+      // Array
+      Reg arrPtr = p.expr_.accept(new ExprVisitor(), null);
+      ArrType arrType = new ArrType(p.type_);
+      String arrTypeStr = TypeToString(arrType, false);
+
+      // Running variable
+      createStackFrame();
+      Reg rvMemPtr = new Reg("ptr");
+      code.println(rvMemPtr.Ident_ + " = alloca " + TypeToString(p.type_));
+      Var runningVar = new Var(rvMemPtr, p.type_);
+      addVarToStackFrame(p.ident_, runningVar);
+
+
+      // Get array length + init
+      Reg lengthPtr = new Reg("ptr");
+      Reg length = new Reg("i32");
+      code.println(lengthPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 0");
+      code.println(length.Ident_ + " = load i32, " + lengthPtr.TypeAndIdent());
+
+      Reg indexPtr = new Reg("ptr");
+      code.println(indexPtr.Ident_ + " = alloca i32");
+      code.println("store i32 0, " + indexPtr.TypeAndIdent());
+
+      code.println("br label %" + labCond);
+
+
+      // Condition
+      code.print(labCond + ": ");
+      Reg index = new Reg("i32");
+      code.println(index.Ident_ + " = load i32, " + indexPtr.TypeAndIdent());
+      Reg comp = new Reg("i1");
+      code.println(comp.Ident_ + " = icmp ult i32 " + index.Ident_ + ", " + length.Ident_);
+      code.println("br i1 " + comp.Ident_ + ", label %" + labLoop + ", label %" + labEnd);
+
+
+      // Loop
+      code.print(labLoop + ": ");
+      Reg valuePtr = new Reg("ptr");
+      valuePtr = indexArray(arrPtr, index, arrType);
+      Reg value = new Reg(TypeToString(p.type_));
+      code.println(value.Ident_ + " = load " + TypeToString(p.type_) + ", " + valuePtr.TypeAndIdent());
+      code.println("store " + value.TypeAndIdent() + ", " + runningVar.memPtrReg_.TypeAndIdent());
+
+      p.stmt_.accept(new StmtVisitor(), null); // Loop body
+
+      Reg newIndex = new Reg("i32");
+      code.println(newIndex.Ident_ + " = add i32 " + index.Ident_ + ", 1");
+      code.println("store " + newIndex.TypeAndIdent() + ", " + indexPtr.TypeAndIdent());
+      code.println("br label %" + labCond);
+
+
+      // End
+      code.print(labEnd + ": ");
+
+      removeTopStackFrame();
       return null;
     }
   }
@@ -665,18 +742,9 @@ public class CodeGenerator {
 
       Reg arrPtr = p.expr_1.accept(new ExprVisitor(), arg);
       ArrType arrType = (ArrType)expressions.get(p.expr_1);
-      String arrTypeStr = TypeToString(arrType, false);
       Reg index = p.expr_2.accept(new ExprVisitor(), arg);
 
-      Reg dataPtrPtr = new Reg("ptr");
-      code.println(dataPtrPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 1");
-      Reg dataPtr = new Reg("ptr");
-      code.println(dataPtr.Ident_ + " = load ptr, " + dataPtrPtr.TypeAndIdent());
-
-      String dataTypeStr = "[0 x " + TypeToString(arrType.type_) + "]";
-      Reg valuePtr = new Reg("ptr");
-      code.println(valuePtr.Ident_ + " = getelementptr " + dataTypeStr + ", " + dataPtr.TypeAndIdent() + ", i32 0, " + index.TypeAndIdent());
-
+      Reg valuePtr = indexArray(arrPtr, index, arrType);
       return valuePtr;
     }
   }

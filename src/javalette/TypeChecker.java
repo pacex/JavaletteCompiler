@@ -422,7 +422,7 @@ public class TypeChecker
     }
     public Type visit(javalette.Absyn.LhsArray p, java.lang.Void arg)
     { /* Code for LhsArray goes here */
-      return p.index_.accept(new IndexVisitor(), arg);
+      return p.index_.accept(new IndexVisitor(), null);
     }
   }
   
