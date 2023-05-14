@@ -38,6 +38,7 @@ public class TypeChecker
 
   private HashMap<String, FuncType> functions;
   private HashMap<Expr, Type> expressions;
+  private HashMap<Index, ArrType> indexAnnotations;
   private LinkedList<EString> stringLiterals;
   private LinkedList<HashMap<String, Type>> stack;
 
@@ -47,6 +48,10 @@ public class TypeChecker
 
   public HashMap<Expr, Type> getExpressions(){
     return expressions;
+  }
+
+  public HashMap<Index, ArrType> getIndexAnnotations(){
+    return indexAnnotations;
   }
 
   public LinkedList<EString> getStringLiterals(){
@@ -85,6 +90,7 @@ public class TypeChecker
     this.ast = ast;
     this.functions = new HashMap<String,FuncType>();
     this.expressions = new HashMap<Expr,Type>();
+    this.indexAnnotations = new HashMap<Index, ArrType>();
     this.stringLiterals = new LinkedList<EString>();
     this.stack = new LinkedList<HashMap<String,Type>>();
 
@@ -647,6 +653,7 @@ public class TypeChecker
       if (!(at instanceof ArrType)) abort("Index operator only allowed on arrays!");
       if (!(p.expr_2.accept(new ExprInferVisitor(), null) instanceof Int)) abort("Index must be of type Int!");
       ArrType arrType = (ArrType)at;
+      indexAnnotations.put(p, arrType);
       return arrType.type_;
     }
   }

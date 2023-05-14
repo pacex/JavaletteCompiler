@@ -92,7 +92,7 @@ public class Test
     // Code Generator
     //generateLLVM = false;
     if (generateLLVM){
-      CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions(), tc.getStringLiterals());
+      CodeGenerator cg = new CodeGenerator(ast, tc.getFunctions(), tc.getExpressions(), tc.getStringLiterals(), tc.getIndexAnnotations());
       PrintStream code = cg.generateCode();
       code.close();
     }

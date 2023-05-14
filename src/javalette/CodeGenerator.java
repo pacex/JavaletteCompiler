@@ -51,6 +51,7 @@ public class CodeGenerator {
   private PrintStream code;
   private HashMap<String, FuncType> functions;
   private HashMap<Expr,Type> expressions;
+  private HashMap<Index, ArrType> indexAnnotations;
   private LinkedList<HashMap<String,Var>> stack;
 
   private LinkedList<EString> stringLiterals;
@@ -88,10 +89,11 @@ public class CodeGenerator {
   }
   // endregion
 
-  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions, HashMap<Expr,Type> expressions, LinkedList<EString> stringLiterals){
+  public CodeGenerator(Prog ast, HashMap<String,FuncType> functions, HashMap<Expr,Type> expressions, LinkedList<EString> stringLiterals, HashMap<Index, ArrType> indexAnnotations){
       this.ast = ast;
       this.functions = functions;
       this.expressions = expressions;
+      this.indexAnnotations = indexAnnotations;
       this.stringLiterals = stringLiterals;
       this.stringLiteralIdentifiers = new HashMap<EString, String>();
       this.code = new PrintStream(System.out, false);
@@ -122,7 +124,7 @@ public class CodeGenerator {
     code.println(elementSize.Ident_ + " = ptrtoint " + elementSizePtr.TypeAndIdent() + " to i32");
 
     // Allocate memory on heap and write array length
-    code.println(arrPtr.Ident_ + " = alloca " + arrTypeStr);
+    code.println(arrPtr.Ident_ + " = call ptr @calloc(i32 2, i32 4)");
 
     Reg cntPtr = new Reg("ptr");
     code.println(cntPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 0");
@@ -216,7 +218,7 @@ public class CodeGenerator {
       
       // Treat arguments as variables on stack
       for (Arg a : args){
-        Reg memPtr = new Reg(TypeToString(a.type_) + "*"); // Create handle for memPtr register
+        Reg memPtr = new Reg("ptr"); // Create handle for memPtr register
         code.println(memPtr.Ident_ + " = alloca " + TypeToString(a.type_)); // Memory allocation
         
         Var v = new Var(memPtr, a.type_); // Add variable to stackframe
@@ -414,8 +416,6 @@ public class CodeGenerator {
     }
 
     public java.lang.Void visit(For p, Void arg) {
-      // TODO
-
       // Labels
       String labCond = getNewLabel();
       String labLoop = getNewLabel();
@@ -741,7 +741,8 @@ public class CodeGenerator {
     { /* Code for ArrInd goes here */
 
       Reg arrPtr = p.expr_1.accept(new ExprVisitor(), arg);
-      ArrType arrType = (ArrType)expressions.get(p.expr_1);
+      //ArrType arrType = (ArrType)expressions.get(p.expr_1);
+      ArrType arrType = indexAnnotations.get(p);
       Reg index = p.expr_2.accept(new ExprVisitor(), arg);
 
       Reg valuePtr = indexArray(arrPtr, index, arrType);
