@@ -28,6 +28,9 @@ Afterwards it will terminate with exit code 0.
 JAVALETTE LANGUAGE AND EXTENSIONS
 =================================
 
-The specification of the Javalette language the compiler uses is found in src/Javalette.cf.
-The grammar is in its original state as provided. Thus there are no additional shift/reduce conflicts.
-No extensions have been implemented at this point for submission B.
+The specification of the Javalette language the compiler uses is found in the grammar file src/Javalette.cf.
+This submission is a preliminary one for assignment C. It implements the following extensions:
+
+ - Arrays1
+
+The grammar file has been extended accordingly. The updated grammar contains no additional shift/reduce conflicts other than those already present in the given grammar.
