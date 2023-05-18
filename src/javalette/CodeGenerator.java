@@ -124,7 +124,7 @@ public class CodeGenerator {
     code.println(elementSize.Ident_ + " = ptrtoint " + elementSizePtr.TypeAndIdent() + " to i32");
 
     // Allocate memory on heap and write array length
-    code.println(arrPtr.Ident_ + " = call ptr @calloc(i32 2, i32 4)");
+    code.println(arrPtr.Ident_ + " = call ptr @calloc(i32 12, i32 1)");
 
     Reg cntPtr = new Reg("ptr");
     code.println(cntPtr.Ident_ + " = getelementptr " + arrTypeStr + ", " + arrPtr.TypeAndIdent() + ", i32 0, i32 0");
