@@ -260,6 +260,36 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
+  public static String print(javalette.Absyn.Dim foo)
+  {
+    pp(foo, 0);
+    trim();
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String show(javalette.Absyn.Dim foo)
+  {
+    sh(foo);
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String print(javalette.Absyn.ListDim foo)
+  {
+    pp(foo, 0);
+    trim();
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String show(javalette.Absyn.ListDim foo)
+  {
+    sh(foo);
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
   public static String print(javalette.Absyn.ListExpr foo)
   {
     pp(foo, 0);
@@ -744,9 +774,7 @@ public class PrettyPrinter
        if (_i_ > 6) render(_L_PAREN);
        render("new");
        pp(_elitarr.type_, 0);
-       render("[");
-       pp(_elitarr.expr_, 0);
-       render("]");
+       pp(_elitarr.listdim_, 0);
        if (_i_ > 6) render(_R_PAREN);
     }
     else     if (foo instanceof javalette.Absyn.ELitInt)
@@ -857,6 +885,42 @@ public class PrettyPrinter
     }
 
   }
+
+  private static void pp(javalette.Absyn.Dim foo, int _i_)
+  {
+    if (foo instanceof javalette.Absyn.ArrDim)
+    {
+       javalette.Absyn.ArrDim _arrdim = (javalette.Absyn.ArrDim) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("[");
+       pp(_arrdim.expr_, 0);
+       render("]");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+
+  }
+
+  private static void pp(javalette.Absyn.ListDim foo, int _i_)
+  {
+    ppListDim(foo.iterator(), _i_);
+  }
+
+  private static void ppListDim(java.util.Iterator<javalette.Absyn.Dim> it, int _i_)
+  {
+    if (it.hasNext())
+    {
+      javalette.Absyn.Dim el = it.next();
+      if (!it.hasNext())
+      { /* last */
+        pp(el, _i_);
+      }
+      else
+      { /* cons */
+        pp(el, _i_); ppListDim(it, _i_);
+      }
+    }
+  }
+
 
   private static void pp(javalette.Absyn.ListExpr foo, int _i_)
   {
@@ -1325,7 +1389,9 @@ public class PrettyPrinter
        render("(");
        render("ELitArr");
        sh(_elitarr.type_);
-       sh(_elitarr.expr_);
+       render("[");
+       sh(_elitarr.listdim_);
+       render("]");
        render(")");
     }
     if (foo instanceof javalette.Absyn.ELitInt)
@@ -1437,6 +1503,28 @@ public class PrettyPrinter
        sh(_eor.expr_2);
        render(")");
     }
+  }
+
+  private static void sh(javalette.Absyn.Dim foo)
+  {
+    if (foo instanceof javalette.Absyn.ArrDim)
+    {
+       javalette.Absyn.ArrDim _arrdim = (javalette.Absyn.ArrDim) foo;
+       render("(");
+       render("ArrDim");
+       sh(_arrdim.expr_);
+       render(")");
+    }
+  }
+
+  private static void sh(javalette.Absyn.ListDim foo)
+  {
+     for (java.util.Iterator<javalette.Absyn.Dim> it = foo.iterator(); it.hasNext();)
+     {
+       sh(it.next());
+       if (it.hasNext())
+         render(",");
+     }
   }
 
   private static void sh(javalette.Absyn.ListExpr foo)

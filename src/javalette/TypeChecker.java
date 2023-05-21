@@ -523,8 +523,14 @@ public class TypeChecker
     }
     public Type visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
-      if (!(p.expr_.accept(new ExprInferVisitor(), arg) instanceof Int)) abort("Array length must be of type Int!");
-      Type arrType = new ArrType(p.type_);
+      if (p.type_ instanceof Void) abort("Cannot allocate array of element type 'Void'!");
+      if (p.listdim_.size() < 1) abort("Cannot allocate zero-dimensional array!");
+      if (!(p.listdim_.get(0).accept(new DimVisitor(), arg) instanceof Int)) abort("Array length must be of type Int!");
+      if (!(p.type_ instanceof Int || p.type_ instanceof Doub || p.type_ instanceof Bool)) abort("Array length must be given for each dimension!");
+      Type arrType = p.type_;
+      for(int i = 0; i < p.listdim_.size(); i++){
+        arrType = new ArrType(arrType);
+      }
       expressions.put(p, arrType);
       return arrType;
     }
@@ -643,6 +649,14 @@ public class TypeChecker
       return ret;
     }
     //endregion
+  }
+
+  public class DimVisitor implements javalette.Absyn.Dim.Visitor<Type,java.lang.Void>
+  {
+    public Type visit(javalette.Absyn.ArrDim p, java.lang.Void arg)
+    { /* Code for ArrDim goes here */
+      return p.expr_.accept(new ExprInferVisitor(), null);
+    }
   }
 
   public class IndexVisitor implements javalette.Absyn.Index.Visitor<Type,java.lang.Void>

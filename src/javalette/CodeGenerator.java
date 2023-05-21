@@ -558,7 +558,7 @@ public class CodeGenerator {
     public Reg visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
       ArrType t = new ArrType(p.type_);
-      Reg cnt = p.expr_.accept(new ExprVisitor(), null);
+      Reg cnt = p.listdim_.get(0).accept(new DimVisitor(), null);
       Reg arrPtr = allocArray(t, cnt);
 
       return arrPtr;
@@ -721,6 +721,14 @@ public class CodeGenerator {
       code.print(labEnd + ": ");
       code.println(r.Ident_ + " = load i1, " + memPtr.TypeAndIdent());
       return r;
+    }
+  }
+
+  public class DimVisitor implements javalette.Absyn.Dim.Visitor<Reg,java.lang.Void>
+  {
+    public Reg visit(javalette.Absyn.ArrDim p, java.lang.Void arg)
+    { /* Code for ArrDim goes here */
+      return p.expr_.accept(new ExprVisitor(), arg);
     }
   }
 

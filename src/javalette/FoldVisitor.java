@@ -183,7 +183,10 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(javalette.Absyn.ELitArr p, A arg) {
       R r = leaf(arg);
       r = combine(p.type_.accept(this, arg), r, arg);
-      r = combine(p.expr_.accept(this, arg), r, arg);
+      for (javalette.Absyn.Dim x : p.listdim_)
+      {
+        r = combine(x.accept(this, arg), r, arg);
+      }
       return r;
     }
     public R visit(javalette.Absyn.ELitInt p, A arg) {
@@ -255,6 +258,13 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       r = combine(p.expr_1.accept(this, arg), r, arg);
       r = combine(p.expr_2.accept(this, arg), r, arg);
+      return r;
+    }
+
+/* Dim */
+    public R visit(javalette.Absyn.ArrDim p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.expr_.accept(this, arg), r, arg);
       return r;
     }
 

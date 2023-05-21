@@ -13,6 +13,7 @@ public class ComposVisitor<A> implements
   javalette.Absyn.Item.Visitor<javalette.Absyn.Item,A>,
   javalette.Absyn.Type.Visitor<javalette.Absyn.Type,A>,
   javalette.Absyn.Expr.Visitor<javalette.Absyn.Expr,A>,
+  javalette.Absyn.Dim.Visitor<javalette.Absyn.Dim,A>,
   javalette.Absyn.Lhs.Visitor<javalette.Absyn.Lhs,A>,
   javalette.Absyn.Index.Visitor<javalette.Absyn.Index,A>,
   javalette.Absyn.AddOp.Visitor<javalette.Absyn.AddOp,A>,
@@ -207,8 +208,12 @@ public class ComposVisitor<A> implements
     public javalette.Absyn.Expr visit(javalette.Absyn.ELitArr p, A arg)
     {
       javalette.Absyn.Type type_ = p.type_.accept(this, arg);
-      javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
-      return new javalette.Absyn.ELitArr(type_, expr_);
+      javalette.Absyn.ListDim listdim_ = new javalette.Absyn.ListDim();
+      for (javalette.Absyn.Dim x : p.listdim_)
+      {
+        listdim_.add(x.accept(this,arg));
+      }
+      return new javalette.Absyn.ELitArr(type_, listdim_);
     }
     public javalette.Absyn.Expr visit(javalette.Absyn.ELitInt p, A arg)
     {
@@ -285,6 +290,13 @@ public class ComposVisitor<A> implements
       javalette.Absyn.Expr expr_1 = p.expr_1.accept(this, arg);
       javalette.Absyn.Expr expr_2 = p.expr_2.accept(this, arg);
       return new javalette.Absyn.EOr(expr_1, expr_2);
+    }
+
+    /* Dim */
+    public javalette.Absyn.Dim visit(javalette.Absyn.ArrDim p, A arg)
+    {
+      javalette.Absyn.Expr expr_ = p.expr_.accept(this, arg);
+      return new javalette.Absyn.ArrDim(expr_);
     }
 
     /* Lhs */

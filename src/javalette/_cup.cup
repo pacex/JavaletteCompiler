@@ -46,6 +46,8 @@ nonterminal javalette.Absyn.ListItem ListItem;
 nonterminal javalette.Absyn.Type Type;
 nonterminal javalette.Absyn.ListType ListType;
 nonterminal javalette.Absyn.Expr Expr6;
+nonterminal javalette.Absyn.Dim Dim;
+nonterminal javalette.Absyn.ListDim ListDim;
 nonterminal javalette.Absyn.Expr Expr5;
 nonterminal javalette.Absyn.Expr Expr4;
 nonterminal javalette.Absyn.Expr Expr3;
@@ -162,7 +164,7 @@ ListType ::=  /* empty */  {: RESULT = new javalette.Absyn.ListType(); :}
 Expr6 ::= _IDENT_:p_1  {: RESULT = new javalette.Absyn.EVar(p_1); :}
   | Index:p_1  {: RESULT = new javalette.Absyn.EIndex(p_1); :}
   | Expr6:p_1 _SYMB_11:p_2 _IDENT_:p_3  {: RESULT = new javalette.Absyn.ELength(p_1,p_3); :}
-  | _SYMB_35:p_1 Type:p_2 _SYMB_12:p_3 Expr:p_4 _SYMB_13:p_5  {: RESULT = new javalette.Absyn.ELitArr(p_2,p_4); :}
+  | _SYMB_35:p_1 Type:p_2 ListDim:p_3  {: RESULT = new javalette.Absyn.ELitArr(p_2,p_3); :}
   | _INTEGER_:p_1  {: RESULT = new javalette.Absyn.ELitInt(p_1); :}
   | _DOUBLE_:p_1  {: RESULT = new javalette.Absyn.ELitDoub(p_1); :}
   | _SYMB_37:p_1  {: RESULT = new javalette.Absyn.ELitTrue(); :}
@@ -170,6 +172,11 @@ Expr6 ::= _IDENT_:p_1  {: RESULT = new javalette.Absyn.EVar(p_1); :}
   | _IDENT_:p_1 _SYMB_0:p_2 ListExpr:p_3 _SYMB_1:p_4  {: RESULT = new javalette.Absyn.EApp(p_1,p_3); :}
   | _STRING_:p_1  {: RESULT = new javalette.Absyn.EString(p_1); :}
   | _SYMB_0:p_1 Expr:p_2 _SYMB_1:p_3  {: RESULT = p_2; :}
+;
+Dim ::= _SYMB_12:p_1 Expr:p_2 _SYMB_13:p_3  {: RESULT = new javalette.Absyn.ArrDim(p_2); :}
+;
+ListDim ::= Dim:p_1  {: RESULT = new javalette.Absyn.ListDim(); RESULT.addLast(p_1); :}
+  | Dim:p_1 ListDim:p_2  {: RESULT = p_2; p_2.addFirst(p_1); :}
 ;
 Expr5 ::= _SYMB_14:p_1 Expr6:p_2  {: RESULT = new javalette.Absyn.Neg(p_2); :}
   | _SYMB_15:p_1 Expr6:p_2  {: RESULT = new javalette.Absyn.Not(p_2); :}

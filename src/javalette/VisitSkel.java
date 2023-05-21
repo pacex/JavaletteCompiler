@@ -198,7 +198,9 @@ public class VisitSkel
     public R visit(javalette.Absyn.ELitArr p, A arg)
     { /* Code for ELitArr goes here */
       p.type_.accept(new TypeVisitor<R,A>(), arg);
-      p.expr_.accept(new ExprVisitor<R,A>(), arg);
+      for (javalette.Absyn.Dim x: p.listdim_) {
+        x.accept(new DimVisitor<R,A>(), arg);
+      }
       return null;
     }
     public R visit(javalette.Absyn.ELitInt p, A arg)
@@ -273,6 +275,14 @@ public class VisitSkel
     { /* Code for EOr goes here */
       p.expr_1.accept(new ExprVisitor<R,A>(), arg);
       p.expr_2.accept(new ExprVisitor<R,A>(), arg);
+      return null;
+    }
+  }
+  public class DimVisitor<R,A> implements javalette.Absyn.Dim.Visitor<R,A>
+  {
+    public R visit(javalette.Absyn.ArrDim p, A arg)
+    { /* Code for ArrDim goes here */
+      p.expr_.accept(new ExprVisitor<R,A>(), arg);
       return null;
     }
   }

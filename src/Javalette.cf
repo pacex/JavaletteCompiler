@@ -74,7 +74,11 @@ EIndex.    Expr6 ::= Index ;
 
 ELength.   Expr6 ::= Expr6 "." Ident ;
 
-ELitArr.   Expr6 ::= "new" Type "[" Expr "]" ;
+ELitArr.   Expr6 ::= "new" Type [Dim] ;
+
+ArrDim.    Dim ::= "[" Expr "]" ;
+
+separator  nonempty Dim "" ;
 
 ELitInt.   Expr6 ::= Integer ;
 

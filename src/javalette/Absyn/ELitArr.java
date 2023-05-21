@@ -4,8 +4,8 @@ package javalette.Absyn;
 
 public class ELitArr  extends Expr {
   public final Type type_;
-  public final Expr expr_;
-  public ELitArr(Type p1, Expr p2) { type_ = p1; expr_ = p2; }
+  public final ListDim listdim_;
+  public ELitArr(Type p1, ListDim p2) { type_ = p1; listdim_ = p2; }
 
   public <R,A> R accept(javalette.Absyn.Expr.Visitor<R,A> v, A arg) { return v.visit(this, arg); }
 
@@ -13,13 +13,13 @@ public class ELitArr  extends Expr {
     if (this == o) return true;
     if (o instanceof javalette.Absyn.ELitArr) {
       javalette.Absyn.ELitArr x = (javalette.Absyn.ELitArr)o;
-      return this.type_.equals(x.type_) && this.expr_.equals(x.expr_);
+      return this.type_.equals(x.type_) && this.listdim_.equals(x.listdim_);
     }
     return false;
   }
 
   public int hashCode() {
-    return 37*(this.type_.hashCode())+this.expr_.hashCode();
+    return 37*(this.type_.hashCode())+this.listdim_.hashCode();
   }
 
 

@@ -79,6 +79,11 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visitDefault(javalette.Absyn.Expr p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
+    /* Dim */
+    public R visit(javalette.Absyn.ArrDim p, A arg) { return visitDefault(p, arg); }
+    public R visitDefault(javalette.Absyn.Dim p, A arg) {
+      throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
+    }
     /* Lhs */
     public R visit(javalette.Absyn.LhsVar p, A arg) { return visitDefault(p, arg); }
     public R visit(javalette.Absyn.LhsArray p, A arg) { return visitDefault(p, arg); }
