@@ -525,10 +525,11 @@ public class TypeChecker
     { /* Code for ELitArr goes here */
       if (p.type_ instanceof Void) abort("Cannot allocate array of element type 'Void'!");
       if (p.listdim_.size() < 1) abort("Cannot allocate zero-dimensional array!");
-      if (!(p.listdim_.get(0).accept(new DimVisitor(), arg) instanceof Int)) abort("Array length must be of type Int!");
       if (!(p.type_ instanceof Int || p.type_ instanceof Doub || p.type_ instanceof Bool)) abort("Array length must be given for each dimension!");
+      
       Type arrType = p.type_;
-      for(int i = 0; i < p.listdim_.size(); i++){
+      for(Dim d : p.listdim_){
+        if (!(d.accept(new DimVisitor(), arg) instanceof Int)) abort("Array length must be of type Int!");
         arrType = new ArrType(arrType);
       }
       expressions.put(p, arrType);
