@@ -41,7 +41,8 @@ public class CodeGenerator {
       ArrType arrT = (ArrType)t;
       if (arrT.type_ instanceof Int) return arrPtr ? "%arrayPtrInt" : "%arrayInt";
       else if (arrT.type_ instanceof Doub) return arrPtr ? "%arrayPtrDouble" : "%arrayDouble";
-      else return arrPtr ? "%arrayPtrBool" : "%arrayBool";
+      else if (arrT.type_ instanceof Bool) return arrPtr ? "%arrayPtrBool" : "%arrayBool";
+      else return arrPtr ? "%arrayPtrArray" : "%arrayArray";
     }
     else if (t instanceof javalette.Absyn.Void) return "void";
     else return "<unknown type>";
@@ -111,13 +112,55 @@ public class CodeGenerator {
     return code;
   }
 
+  private Reg allocMultiArray(ArrType t, LinkedList<Reg> cnts, int dim){
+    Reg cnt = cnts.get(cnts.size() - dim);
+
+    Reg arrPtr = allocArray(t, cnt);
+
+    if (dim > 1){
+      Reg i = new Reg("i32*");
+      code.println(i.Ident_ + " = alloca i32");
+      code.println("store i32 0, " + i.TypeAndIdent());
+      String labCond = getNewLabel();
+      String labBody = getNewLabel();
+      String labEnd = getNewLabel();
+
+      code.println("br label %" + labCond);
+      
+      // Condition
+      code.print(labCond + ": ");
+      Reg jmp = new Reg("i1");
+      Reg currentIndex = new Reg("i32");
+      code.println(currentIndex.Ident_ + " = load i32, " + i.TypeAndIdent());
+      code.println(jmp.Ident_ + " = icmp ult i32 " + currentIndex.Ident_ + ", " + cnt.Ident_);
+      code.println("br i1 " + jmp.Ident_ + ", label %" + labBody + ", label %" + labEnd);
+
+      // Body
+      code.print(labBody + ": ");
+      Reg valPtr = indexArray(arrPtr, currentIndex, t);
+      Reg subArrPtr = allocMultiArray((ArrType)t.type_, cnts, dim - 1);
+      code.println("store " + subArrPtr.TypeAndIdent() + ", " + valPtr.TypeAndIdent());
+
+      Reg newIndex = new Reg("i32");
+      code.println(newIndex.Ident_ + " = add i32 " + currentIndex.Ident_ + ", 1");
+      code.println("store " + newIndex.TypeAndIdent() + ", " + i.TypeAndIdent());
+
+      code.println("br label %" + labCond);
+
+      // End
+      code.print(labEnd + ": ");
+    }
+
+    return arrPtr;
+  }
+
   private Reg allocArray(ArrType t, Reg cnt){
     Reg arrPtr = new Reg(TypeToString(t, true));
     String arrTypeStr = TypeToString(t, false);
 
     // Compute element size in bytes
     Type elementType = t.type_;
-    String elemTypeStr = TypeToString(elementType);
+    String elemTypeStr = TypeToString(elementType, true);
     Reg elementSizePtr = new Reg("ptr");
     Reg elementSize = new Reg("i32");
     code.println(elementSizePtr.Ident_ + " = getelementptr " + elemTypeStr + ", ptr null, i32 1");
@@ -172,10 +215,12 @@ public class CodeGenerator {
       code.println("%arrayPtrInt = type %arrayInt*");
       code.println("%arrayPtrDouble = type %arrayDouble*");
       code.println("%arrayPtrBool = type %arrayBool*");
+      code.println("%arrayPtrArray = type %arrayArray*");
 
       code.println("%arrayInt = type {i32, [0 x i32]*}");
       code.println("%arrayDouble = type {i32, [0 x double]*}");
       code.println("%arrayBool = type {i32, [0 x i1]*}");
+      code.println("%arrayArray = type {i32, [0 x ptr]*}");
       
 
       // String literals
@@ -557,28 +602,26 @@ public class CodeGenerator {
     }
     public Reg visit(javalette.Absyn.ELitArr p, java.lang.Void arg)
     { /* Code for ELitArr goes here */
-      ArrType t = new ArrType(p.type_);
-      Reg cnt = p.listdim_.get(0).accept(new DimVisitor(), null);
-      Reg arrPtr = allocArray(t, cnt);
+      Type t = p.type_;
+      LinkedList<Reg> cnts = new LinkedList<Reg>();
+      for (int i = 0; i < p.listdim_.size(); i++){
+        cnts.add(p.listdim_.get(i).accept(new DimVisitor(), null));
+        t = new ArrType(t);
+      }
+      Reg arrPtr = allocMultiArray((ArrType)t, cnts, p.listdim_.size());
 
       return arrPtr;
     }
 
     public Reg visit(javalette.Absyn.ELitInt p, java.lang.Void arg)
     { /* Code for ELitInt goes here */
-      //p.integer_;
-      //Reg z = new Reg("i32");
       Reg r = new Reg("i32");
-      //code.println(z.Ident_ + " = load i32, i32* @zeroInt");
-      //code.println(r.Ident_ + " = add " + z.TypeAndIdent() + ", " + Integer.valueOf(p.integer_));
       code.println(r.Ident_ + " = add i32 0, " + Integer.valueOf(p.integer_));
       return r;
     }
     public Reg visit(javalette.Absyn.ELitDoub p, java.lang.Void arg)
     { /* Code for ELitDoub goes here */
-      //Reg z = new Reg("double");
       Reg r = new Reg("double");
-      //code.println(z.Ident_ + " = load double, double* @zeroDouble");
       code.println(r.Ident_ + " = fadd double 0.0, " + Double.valueOf(p.double_));
       return r;
     }

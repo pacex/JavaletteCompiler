@@ -32,5 +32,8 @@ The specification of the Javalette language the compiler uses is found in the gr
 This submission is a preliminary one for assignment C. It implements the following extensions:
 
  - Arrays1
+ - Arrays2
 
-The grammar file has been extended accordingly. The updated grammar contains no additional shift/reduce conflicts other than those already present in the given grammar.
+The grammar file has been extended accordingly. The updated grammar contains ONE additional shift/reduce conflict other than those already present in the given grammar.
+
+It occurs between the rules "Expr6 ::= "new" Type [Dim] ;" and "Dim ::= "[" Expr "]" ;" under the symbol "[". This is because "[" could also be the begin of the index operator, indexing the newly allocated array. Since the conflict is resolved in favor of shifting, subsequent "[" symbols will never be seen as part of an index operator, preserving the intended behaviour. The consequence is that directly indexing an array at the "new" keyword is impossible without specifying precedence through additional brackets. This is neither severe nor avoidable with the given syntax.
